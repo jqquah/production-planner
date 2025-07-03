@@ -76,7 +76,7 @@
             "description": "Create a detailed entity-relationship diagram (ERD) that visualizes all tables, their attributes, and relationships between them.",
             "dependencies": [],
             "details": "Use a database modeling tool like dbdiagram.io, Lucidchart, or ERDPlus to create a comprehensive ERD. Define primary keys, foreign keys, and cardinality relationships (one-to-many, many-to-many). Include all attributes with their data types and constraints (NOT NULL, UNIQUE, etc.). Document any indexes that will be needed for performance optimization.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Review the ERD with team members to ensure it meets all business requirements and follows database design best practices."
           },
           {
@@ -87,7 +87,7 @@
               1
             ],
             "details": "Use Sequelize or Knex.js to create migration files for each table. Define column types, constraints, and relationships according to the ERD. Implement foreign key constraints with appropriate ON DELETE and ON UPDATE behaviors. Create indexes on frequently queried columns. Include timestamp columns (created_at, updated_at) with default values. Ensure the migration can be rolled back (down function) if needed.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test migrations by running them on a development database and verifying the resulting schema matches the ERD. Test rollback functionality to ensure it properly reverts changes."
           },
           {
@@ -98,7 +98,7 @@
               2
             ],
             "details": "Using Sequelize or another ORM, create model files for each table. Define attributes with proper data types and validation rules. Implement model associations (belongsTo, hasMany, belongsToMany) to represent table relationships. Add virtual fields and instance/class methods as needed. Implement hooks for data processing before save/update operations if required.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Write unit tests for models that verify validation rules, relationships, and custom methods work as expected."
           },
           {
@@ -109,7 +109,7 @@
               3
             ],
             "details": "Create seed files that insert realistic test data into all tables. Ensure referential integrity by creating data in the correct order (e.g., Users before Recipes). Generate at least 5-10 records for each main entity (Users, Recipes, Materials). Create associated records for junction tables. Include different scenarios in the seed data to facilitate testing various application features. Use faker.js or similar libraries to generate realistic data.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Run seed scripts on a test database and verify data integrity. Check that all relationships are properly established and constraints are satisfied."
           },
           {
@@ -120,7 +120,7 @@
               3
             ],
             "details": "Create repository classes for each main entity (UserRepository, RecipeRepository, etc.). Implement CRUD operations and specialized query methods. Use transactions for operations that affect multiple tables. Add pagination support for list operations. Implement filtering and sorting capabilities. Create methods for common business operations (e.g., allocateInventoryForBatch, completeQualityCheck). Document each repository method with JSDoc comments.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Write integration tests that verify repository methods correctly interact with the database. Test edge cases like empty results, constraint violations, and concurrent operations."
           }
         ]
@@ -460,7 +460,7 @@
     ],
     "metadata": {
       "created": "2025-07-03T04:25:45.172Z",
-      "updated": "2025-07-03T07:30:15.394Z",
+      "updated": "2025-07-03T07:57:39.816Z",
       "description": "Tasks for master context"
     }
   }

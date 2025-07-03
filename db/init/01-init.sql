@@ -1,106 +1,92 @@
--- Create user roles enum type
-CREATE TYPE user_role AS ENUM ('admin', 'production_manager', 'production_staff');
+-- Enum Types
+CREATE TYPE user_role AS ENUM ('admin', 'production_manager');
+CREATE TYPE production_status AS ENUM ('Pending', 'In Progress', 'Completed', 'Cancelled');
 
--- Create users table
+-- Users Table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    role user_role NOT NULL DEFAULT 'production_staff',
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    role user_role NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create raw_materials table
-CREATE TABLE raw_materials (
+-- Materials Table (Raw Materials)
+CREATE TABLE materials (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    sku VARCHAR(50) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
     description TEXT,
-    quantity_on_hand NUMERIC(10, 2) NOT NULL DEFAULT 0,
-    unit_of_measure VARCHAR(20) NOT NULL, -- e.g., kg, L, units
-    cost_per_unit NUMERIC(10, 2) NOT NULL,
-    supplier_info TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    unit VARCHAR(50), -- e.g., kg, L, units
+    min_stock_level NUMERIC(10, 2) DEFAULT 0,
+    current_stock NUMERIC(10, 2) DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create ingredients table (derived from raw materials)
-CREATE TABLE ingredients (
+-- Material Batches (Specific batches of raw materials)
+CREATE TABLE material_batches (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) UNIQUE NOT NULL,
-    description TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    material_id INTEGER NOT NULL REFERENCES materials(id),
+    batch_number VARCHAR(100) UNIQUE NOT NULL,
+    quantity NUMERIC(10, 2) NOT NULL,
+    expiry_date DATE,
+    received_date DATE DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create recipes table
+-- Recipes Table
 CREATE TABLE recipes (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(100) UNIQUE NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    version VARCHAR(50) NOT NULL,
     description TEXT,
-    instructions TEXT,
-    created_by INT REFERENCES users(id),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_by INTEGER REFERENCES users(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(name, version)
 );
 
--- Create recipe_ingredients join table
+-- Recipe Ingredients Table (Join table for Recipes and Materials)
 CREATE TABLE recipe_ingredients (
-    recipe_id INT NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
-    ingredient_id INT NOT NULL REFERENCES ingredients(id) ON DELETE CASCADE,
-    quantity NUMERIC(10, 2) NOT NULL,
-    unit_of_measure VARCHAR(20) NOT NULL,
-    PRIMARY KEY (recipe_id, ingredient_id)
-);
-
--- Create production_orders table
-CREATE TABLE production_orders (
     id SERIAL PRIMARY KEY,
-    recipe_id INT NOT NULL REFERENCES recipes(id),
-    batch_size INT NOT NULL,
-    status VARCHAR(20) NOT NULL DEFAULT 'pending', -- pending, in_progress, completed, cancelled
-    scheduled_start_date TIMESTAMPTZ,
-    actual_start_date TIMESTAMPTZ,
-    completed_date TIMESTAMPTZ,
-    notes TEXT,
-    created_by INT REFERENCES users(id),
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    recipe_id INTEGER NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
+    material_id INTEGER NOT NULL REFERENCES materials(id),
+    quantity NUMERIC(10, 2) NOT NULL,
+    unit VARCHAR(50),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create triggers to automatically update the updated_at timestamp
-CREATE OR REPLACE FUNCTION trigger_set_timestamp()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+-- Production Batches Table
+CREATE TABLE production_batches (
+    id SERIAL PRIMARY KEY,
+    recipe_id INTEGER NOT NULL REFERENCES recipes(id),
+    planned_quantity NUMERIC(10, 2) NOT NULL,
+    actual_quantity NUMERIC(10, 2),
+    status production_status NOT NULL DEFAULT 'Pending',
+    scheduled_date DATE NOT NULL,
+    completion_date DATE,
+    created_by INTEGER REFERENCES users(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
--- Apply the trigger to all tables
-CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON users
-FOR EACH ROW
-EXECUTE PROCEDURE trigger_set_timestamp();
+-- Batch Materials (Join table for Production Batches and Material Batches)
+CREATE TABLE batch_materials (
+    id SERIAL PRIMARY KEY,
+    production_batch_id INTEGER NOT NULL REFERENCES production_batches(id),
+    material_batch_id INTEGER NOT NULL REFERENCES material_batches(id),
+    quantity_used NUMERIC(10, 2) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON raw_materials
-FOR EACH ROW
-EXECUTE PROCEDURE trigger_set_timestamp();
+-- Quality Checks Table
+CREATE TABLE quality_checks (
+    id SERIAL PRIMARY KEY,
+    production_batch_id INTEGER NOT NULL REFERENCES production_batches(id),
+    checked_by INTEGER REFERENCES users(id),
+    status VARCHAR(50), -- e.g., 'Pass', 'Fail', 'Pending'
+    comments TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
-CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON ingredients
-FOR EACH ROW
-EXECUTE PROCEDURE trigger_set_timestamp();
-
-CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON recipes
-FOR EACH ROW
-EXECUTE PROCEDURE trigger_set_timestamp();
-
-CREATE TRIGGER set_timestamp
-BEFORE UPDATE ON production_orders
-FOR EACH ROW
-EXECUTE PROCEDURE trigger_set_timestamp();
+-- Optional: Add a default admin user for initial setup
+-- For production, use a more secure method to create the first admin user
+INSERT INTO users (username, email, password_hash, role) VALUES ('admin', 'admin@example.com', '$2a$10$qa7JPKorTEwH8O/4q0Uqnu.qrpJNN8R9rWZ6EdfpzP.CjrNmKT8K6', 'admin');

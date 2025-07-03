@@ -2,7 +2,7 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const pool = require('../db');
+const userModel = require('../models/userModel');
 
 const router = express.Router();
 
@@ -26,25 +26,18 @@ router.post(
 
     try {
       // Check if user already exists
-      let user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-      if (user.rows.length > 0) {
+      let user = await userModel.findUserByEmail(email);
+      if (user) {
         return res.status(400).json({ msg: 'User already exists' });
       }
 
-      // Hash password
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-
       // Save user to database
-      const newUser = await pool.query(
-        'INSERT INTO users (username, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, username, email, role',
-        [username, email, hashedPassword, role || 'production_staff']
-      );
+      const newUser = await userModel.createUser(username, email, password, role || 'production_staff');
 
       // Create and return JWT
       const payload = {
         user: {
-          id: newUser.rows[0].id,
+          id: newUser.id,
         },
       };
 
@@ -83,13 +76,13 @@ router.post(
 
     try {
       // Check if user exists
-      let user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-      if (user.rows.length === 0) {
+      let user = await userModel.findUserByEmail(email);
+      if (!user) {
         return res.status(400).json({ msg: 'Invalid credentials' });
       }
 
       // Check password
-      const isMatch = await bcrypt.compare(password, user.rows[0].password_hash);
+      const isMatch = await bcrypt.compare(password, user.password_hash);
       if (!isMatch) {
         return res.status(400).json({ msg: 'Invalid credentials' });
       }
@@ -97,7 +90,7 @@ router.post(
       // Create and return JWT
       const payload = {
         user: {
-          id: user.rows[0].id,
+          id: user.id,
         },
       };
 

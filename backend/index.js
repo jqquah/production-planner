@@ -8,8 +8,12 @@ if (!process.env.JWT_SECRET) {
 }
 console.log('JWT_SECRET found.');
 
+require('./db'); // Ensures the database pool is initialized
+
 const app = express();
 const port = process.env.PORT || 5000;
+
+console.log('Starting server setup...');
 
 console.log('Configuring middleware...');
 // Middleware for parsing JSON bodies
@@ -24,6 +28,9 @@ app.get('/', (req, res) => {
 console.log('Loading routes...');
 try {
   app.use('/api/auth', require('./routes/auth'));
+  app.use('/api/recipes', require('./routes/recipes'));
+  app.use('/api/materials', require('./routes/materials'));
+  app.use('/api/production', require('./routes/production'));
   console.log('Routes loaded successfully.');
 } catch (err) {
   console.error('Error loading routes:', err);
@@ -33,3 +40,5 @@ try {
 app.listen(port, () => {
   console.log(`Backend server listening on port ${port}`);
 });
+
+console.log('Server setup complete.');
