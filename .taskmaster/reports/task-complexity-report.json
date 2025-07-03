@@ -1,0 +1,133 @@
+{
+	"meta": {
+		"generatedAt": "2025-07-03T04:34:45.154Z",
+		"tasksAnalyzed": 15,
+		"totalTasks": 15,
+		"analysisCount": 15,
+		"thresholdScore": 5,
+		"projectName": "Task Master",
+		"usedResearch": true
+	},
+	"complexityAnalysis": [
+		{
+			"taskId": 5,
+			"taskTitle": "Setup Project Infrastructure with Docker",
+			"complexityScore": 7,
+			"recommendedSubtasks": 6,
+			"expansionPrompt": "Break down the Docker infrastructure setup into specific subtasks covering development environment, production environment, database configuration, networking, documentation, and testing.",
+			"reasoning": "This task involves multiple Docker services, environment configurations, and networking setup. It requires detailed knowledge of Docker, container orchestration, and infrastructure design. The task has high priority and is a dependency for several other tasks."
+		},
+		{
+			"taskId": 6,
+			"taskTitle": "Implement CI/CD Pipeline",
+			"complexityScore": 8,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Divide the CI/CD pipeline implementation into subtasks for each pipeline stage: code linting, testing, Docker image building, deployment configuration, secrets management, versioning, and documentation.",
+			"reasoning": "Setting up a CI/CD pipeline involves multiple stages and technologies. It requires integration with various testing frameworks, deployment environments, and security considerations. The task has high priority and depends on the Docker infrastructure."
+		},
+		{
+			"taskId": 7,
+			"taskTitle": "Implement User Authentication and Authorization",
+			"complexityScore": 8,
+			"recommendedSubtasks": 8,
+			"expansionPrompt": "Break down the authentication and authorization system into subtasks covering JWT implementation, user registration/login, role-based access control, password management, token handling, security measures, and testing.",
+			"reasoning": "Authentication and authorization are critical security components requiring careful implementation. The task involves multiple security concerns, role definitions, and token management strategies. It has high priority and is a dependency for many other tasks."
+		},
+		{
+			"taskId": 8,
+			"taskTitle": "Design and Implement Database Schema",
+			"complexityScore": 7,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Divide the database schema design into subtasks for each core entity (Users, RawMaterials, Recipes, ProductionBatches, QualityChecks, Suppliers), plus migration setup and testing.",
+			"reasoning": "Database schema design requires careful planning of relationships, constraints, and indexing strategies. The task involves multiple entities with complex relationships and requires consideration of data integrity and performance."
+		},
+		{
+			"taskId": 9,
+			"taskTitle": "Develop Backend API for Raw Materials Management",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break down the raw materials API development into subtasks covering CRUD operations, batch tracking, file uploads for CoA documents, inventory management, and supplier information endpoints.",
+			"reasoning": "This API development task involves standard CRUD operations plus specialized functionality for batch tracking and file uploads. It has medium complexity due to the need for real-time stock levels and WebSocket alerts."
+		},
+		{
+			"taskId": 10,
+			"taskTitle": "Develop Backend API for Recipe Management",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Divide the recipe management API into subtasks covering CRUD operations, version control, cost calculation algorithms, material requirements planning, and recipe validation.",
+			"reasoning": "Recipe management involves complex business logic for version control, cost calculations, and material requirements planning. These algorithms add significant complexity beyond basic CRUD operations."
+		},
+		{
+			"taskId": 11,
+			"taskTitle": "Develop Backend API for Production Planning",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break down the production planning API into subtasks covering batch scheduling, resource allocation, dependency management, timeline data generation, and conflict detection.",
+			"reasoning": "Production planning involves complex scheduling algorithms, resource allocation, and dependency management. The task requires handling potential conflicts and generating timeline data for visualization."
+		},
+		{
+			"taskId": 12,
+			"taskTitle": "Develop Backend API for Quality Control",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Divide the quality control API into subtasks covering quality checks, non-conformance reporting, batch traceability, statistical process control, and quality alerts.",
+			"reasoning": "Quality control API involves specialized functionality for tracking quality parameters and implementing statistical process control. The batch traceability requirements add complexity to ensure complete history tracking."
+		},
+		{
+			"taskId": 13,
+			"taskTitle": "Develop Backend API for Reporting & Analytics",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break down the reporting and analytics API into subtasks covering production reports, cost analysis, efficiency metrics, inventory valuation, and data export functionality.",
+			"reasoning": "Reporting and analytics involve complex data aggregation, SQL window functions, and caching strategies. The task requires implementing various calculation algorithms for costs, efficiency metrics, and inventory valuation."
+		},
+		{
+			"taskId": 14,
+			"taskTitle": "Develop Frontend Authentication and User Management",
+			"complexityScore": 6,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Divide the frontend authentication implementation into subtasks covering login/registration components, token management, protected routes, user profile management, and role-based UI rendering.",
+			"reasoning": "Frontend authentication requires implementing multiple UI components and secure token handling. The role-based UI rendering and protected routes add complexity to ensure proper access control on the client side."
+		},
+		{
+			"taskId": 15,
+			"taskTitle": "Develop Frontend for Raw Materials Management",
+			"complexityScore": 5,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Break down the raw materials frontend into subtasks covering data tables with filtering/sorting, forms for material management, file upload components, and inventory visualization.",
+			"reasoning": "This frontend task involves implementing data tables, forms, and visualizations. The complexity is moderate, focusing on UI components for material management and inventory tracking."
+		},
+		{
+			"taskId": 16,
+			"taskTitle": "Develop Frontend for Recipe Management",
+			"complexityScore": 6,
+			"recommendedSubtasks": 4,
+			"expansionPrompt": "Divide the recipe management frontend into subtasks covering recipe creation/editing forms, version control interface, cost calculation display, and material requirements planning visualization.",
+			"reasoning": "Recipe management frontend requires complex forms and visualizations. The version control interface and drag-and-drop functionality for recipe steps add significant UI complexity."
+		},
+		{
+			"taskId": 17,
+			"taskTitle": "Develop Frontend for Production Planning",
+			"complexityScore": 8,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Break down the production planning frontend into subtasks covering calendar/scheduling interface, resource allocation UI, timeline/Gantt visualization, dependency management, and conflict detection.",
+			"reasoning": "Production planning frontend involves complex UI components like calendars, Gantt charts, and drag-and-drop scheduling. The conflict detection and resolution for resource allocation add significant complexity."
+		},
+		{
+			"taskId": 18,
+			"taskTitle": "Develop Frontend for Quality Control and Reporting",
+			"complexityScore": 7,
+			"recommendedSubtasks": 5,
+			"expansionPrompt": "Divide the quality control and reporting frontend into subtasks covering quality check forms, non-conformance workflow, batch traceability visualization, reporting dashboards, and data export functionality.",
+			"reasoning": "This task combines quality control interfaces with complex reporting dashboards. The interactive charts, real-time updates via WebSockets, and printable report templates add significant UI complexity."
+		},
+		{
+			"taskId": 19,
+			"taskTitle": "Implement Security Measures and Audit Logging",
+			"complexityScore": 9,
+			"recommendedSubtasks": 7,
+			"expansionPrompt": "Break down the security implementation into subtasks covering data encryption, audit logging, rate limiting, input sanitization, CSRF protection, security headers, and two-factor authentication.",
+			"reasoning": "Security implementation is highly complex and critical. It involves multiple security layers including encryption, protection against various attack vectors, audit logging, and authentication enhancements. This task requires specialized security knowledge and careful implementation."
+		}
+	]
+}

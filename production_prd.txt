@@ -1,0 +1,156 @@
+# Factory Production Planning System - Product Requirements Document (PRD)
+
+## 1. Overview
+
+A web-based Factory Production Planning System designed to streamline production processes, manage raw materials, and track production batches with precision. 
+
+This system is replacing a manual Excel process that fails to record production based on batch raw materials, leading to waste from expired inventory. We are exploring other systems, but they are either too expensive (e.g., SAP) or not production-focused (mainly accounting systems). 
+
+The primary user will be our internal team, who will use the system to print instructions for our OEM partners to lock in production. OEMs will be required to match all delivered raw materials by batch number and update production outputs with their own batch numbers.
+
+## 2. Objectives
+
+- Centralize production planning and management.
+- Track raw material batches from receipt to production.
+- Reduce raw material wastage due to expiry.
+- Optimize resource allocation and minimize manual data entry.
+- Ensure quality control through batch tracking.
+- Provide actionable insights through reporting.
+
+## 3. User Roles
+
+### 3.1 Admin
+- Oversees all system functions.
+- Manages user accounts and permissions.
+- Configures system settings.
+- Views comprehensive reports.
+
+### 3.2 Production Manager
+- Creates and manages production plans.
+- Monitors production progress.
+- Manages raw material inventory.
+- Generates production reports.
+- Interacts with the system via a **mobile-first interface** (tablet/phone).
+- Records production data using simplified controls (e.g., large buttons, barcode scanning).
+- Updates batch statuses with minimal typing.
+
+## 4. Core Features
+
+### 4.1 User Management
+- **Role-Based Access Control (RBAC)**: Admin, Production Manager.
+- **User Profiles**: Manage user information.
+- **Authentication**: Secure login/logout.
+
+### 4.2 Recipe Management
+- **Recipe Creation**: Define product formulations.
+- **Version Control**: Track recipe changes.
+- **Cost Calculation**: Estimate using last production cost.
+- **Material Requirements Planning (MRP)**: Calculate required materials for a production run.
+
+### 4.3 Production Planning
+- **Batch Creation**: Plan production runs.
+- **Scheduling**: Assign production dates.
+- **Status Tracking**: Monitor batch progress (e.g., Pending, In Progress, Completed).
+
+### 4.4 Inventory Management
+- **Raw Material Tracking**: Log incoming materials with batch numbers and expiry dates.
+- **Stock Levels**: Real-time view of inventory.
+- **Low-Stock Alerts**: Automated notifications.
+
+### 4.5 Quality Control
+- **Batch-Specific QA**: Link quality checks to production batches.
+- **Parameter Logging**: Record QA results.
+
+### 4.6 Reporting
+- **Production Efficiency Reports**: Analyze output and resource utilization.
+- **Material Traceability Reports**: Track batches from raw material to finished product.
+- **Quality Assurance Reports**: Summarize QA outcomes.
+
+## 5. Technical Specifications
+
+### 5.1 Frontend
+- **Framework**: React with TypeScript
+- **UI Library**: Material-UI (MUI) or similar for rapid development.
+- **State Management**: Redux Toolkit.
+- **Mobile Responsiveness**: Mobile-first design approach.
+
+### 5.2 Backend
+- **Framework**: Node.js with Express
+- **Database**: PostgreSQL
+- **Authentication**: JWT (JSON Web Tokens)
+- **API**: RESTful API
+
+### 5.3 Infrastructure
+- **Containerization**: Docker
+- **CI/CD**: GitHub Actions
+- **Hosting**: AWS, Google Cloud, or similar cloud provider.
+
+## 6. Integrations
+- **Barcode Scanning**: Via mobile device camera or dedicated scanners.
+- **Email/SMS**: For notifications and alerts (e.g., using Twilio, SendGrid).
+
+## 7. Success Metrics
+- **Reduction in manual data entry time**: Target 50% reduction.
+- **Improved material traceability**: 100% batch-level tracking.
+- **Reduction in production planning time**: Target 30% reduction.
+- **User adoption rate**: 90% of target users active weekly within 3 months.
+
+## 8. Risks and Mitigations
+- **Risk**: Data migration from legacy systems.
+  - **Mitigation**: Phased rollout, starting with new production runs.
+- **Risk**: User resistance to new system.
+  - **Mitigation**: Involve users in design, provide training and support.
+- **Risk**: Vendor lock-in with managed services.
+  - **Mitigation**: Choose providers with clear data export policies and standard technologies (e.g., PostgreSQL, S3-compatible APIs).
+
+## 9. User Stories
+
+### Admin
+- As an Admin, I want to create new user accounts and assign roles, so that each staff member has access to only the tools they need.
+- As an Admin, I want to generate a monthly QA report without needing technical help, so I can quickly share outcomes with executives.
+- As an Admin, I occasionally want to generate production jobs and take over the production manager's job as well.
+
+### Production Manager
+- As a Production Manager, I want to view future planned batches on a single timeline, so I can notify OEMs as required.
+- As a Production Manager, I want to receive low-inventory alerts, so I can reorder materials before they run out.
+- As a Production Manager, I want to scan materials into the system with my phone, so I don’t waste time typing codes.
+- As a Production Manager, I want to log a batch as “completed” with two taps, so I can get back to work quickly.
+
+## 10. User Experience / Flows
+
+### Example Flow: Production Manager – “Log Batch Completion” (Mobile)
+
+1.  **Login**: Production Manager logs in using their device or a badge scan.
+2.  **View Batches**: Taps the “Active Batches” list to see only their assigned work.
+3.  **Scan Batch**: Selects a batch, taps “Scan,” and scans the batch barcode.
+4.  **Update Status**: The system auto-fills the batch fields and prompts for a completion status.
+5.  **Add Comment**: The Production Manager selects a status (from a dropdown or large buttons) and optionally adds a quick comment using speech-to-text.
+6.  **Submit**: Taps “Submit” and sees an instant confirmation and their next assigned task.
+
+### Edge Cases
+- **Barcode Scan Failure**: If the barcode doesn’t scan, provide an option to enter the code manually or flag a broken label.
+- **Incomplete Submission**: If required fields are empty, prompt the user with a clear error message (e.g., “Please select a status.”).
+
+*(This section can be repeated for other key workflows like new batch creation, quality checks, issue reporting, etc.)*
+
+## 11. Non-Goals (Out of Scope for V1)
+
+- Custom report builder UI.
+- Real-time API integration with factory equipment/IoT devices.
+- In-depth accounting/ERP features (only basic supplier & cost tracking).
+- Integrations with legacy desktop systems.
+
+## 12. Change Management
+
+- **Internal Champions**: Assign a “project superuser” per factory shift to handle local questions and gather feedback.
+- **Onboarding**: Deliver hands-on workshops for all roles and record screen-share demos for later access.
+- **Documentation**: Provide cheat sheets and quick-reference guides, especially for mobile workflows.
+- **Feedback Loop**: Conduct weekly check-ins with pilot users to refine pain points and UI sticking spots.
+- **Support**: Provide a dedicated Slack/email support line during rollout.
+
+## 13. Monitoring & Support
+
+- **Application Issues**: Handled by in-house IT Support first, escalated to the vendor if unresolved in 24 hours.
+- **Hardware Failures**: Factory IT will maintain spares (barcode scanners, tablets); staff can submit tickets via a Helpdesk app.
+- **Cloud Services/Downtime**: Monitored by the vendor with auto-notifications to the IT lead. The vendor is responsible for both the fix and user updates.
+- **Critical Incident Escalation**: The IT Lead will coordinate with factory management and the vendor until the issue is resolved.
