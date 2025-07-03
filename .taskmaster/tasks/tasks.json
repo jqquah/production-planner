@@ -55,6 +55,15 @@
             "details": "1. Install and configure ESLint for both frontend and backend\n2. Set up Prettier for code formatting\n3. Configure pre-commit hooks using husky\n4. Create comprehensive README with setup instructions\n5. Document architecture decisions and project structure\n6. Set up API documentation using Swagger or similar tool\n7. Create developer onboarding guide with local setup instructions",
             "status": "done",
             "testStrategy": "Verify that linting and formatting rules are applied correctly. Ensure documentation is accurate by following the setup instructions on a clean environment."
+          },
+          {
+            "id": 6,
+            "title": "Fix Backend Environment and Improve Type Safety",
+            "description": "Resolved critical backend startup issues by configuring dotenv to load environment variables from the root .env file. Addressed port conflicts and improved database connection logic. Centralized frontend TypeScript types into a single types.ts file to ensure type safety and consistency across components.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 20
           }
         ]
       },
@@ -178,7 +187,7 @@
           21,
           22
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -197,7 +206,7 @@
               1
             ],
             "details": "Create database schema for version history. Implement version creation on recipe updates. Add functionality to view, compare, and restore previous versions. Include metadata like version number, timestamp, and author for each version.",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Test version creation on recipe updates. Verify history retrieval accuracy. Test version comparison functionality. Ensure proper restoration of previous versions."
           },
           {
@@ -221,7 +230,7 @@
               3
             ],
             "details": "Create responsive components for: recipe list with filtering/sorting, detailed recipe view, creation/edit form with validation, version history display, cost calculation visualization, and material requirements calculator. Ensure consistent styling and user experience.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Write unit tests for component rendering. Create integration tests for form submissions and data display. Perform usability testing with representative users. Test responsive design across different screen sizes."
           },
           {
@@ -233,7 +242,7 @@
               4
             ],
             "details": "Create duplication functionality that creates a new recipe based on an existing one. Implement comprehensive validation for recipe data including ingredient compatibility checks. Add bulk operations for recipes such as archiving, categorizing, or applying tags.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test duplication functionality to ensure proper copying of all recipe attributes. Verify validation logic catches all potential errors. Test bulk operations with various selection sizes."
           },
           {
@@ -242,7 +251,7 @@
             "description": "Implement RESTful API endpoints for creating, reading, updating, and deleting recipes, including data models and database schema.",
             "dependencies": [],
             "details": "Create a Recipe model with fields for name, description, ingredients (with quantities and units), instructions, version number, and timestamps. Implement controller methods for GET (list and detail), POST, PUT, and DELETE operations. Include proper error handling and validation middleware. Set up database migrations for the recipe schema.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Write unit tests for model validation and API endpoint functionality. Use mock database for testing. Verify all CRUD operations work correctly with appropriate status codes and response formats."
           },
           {
@@ -253,7 +262,7 @@
               6
             ],
             "details": "Extend the Recipe model to support versioning with a version number field and parent-child relationships. Create API endpoints for creating new versions, viewing version history, and restoring previous versions. Implement a diff algorithm to highlight changes between versions. Store complete recipe snapshots for each version rather than just the differences.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test version creation, retrieval of version history, and restoration of previous versions. Verify that version numbers increment correctly and that parent-child relationships are maintained."
           },
           {
@@ -264,7 +273,7 @@
               6
             ],
             "details": "Create a cost calculation service that retrieves the latest production costs for each ingredient from the production database. Implement formulas to calculate total recipe cost based on ingredient quantities and their unit costs. Add caching mechanism for ingredient costs to improve performance. Include functionality to recalculate costs when ingredient prices change.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test cost calculations with various ingredient combinations and quantities. Verify integration with production cost system using mock data. Test edge cases like missing cost data or zero quantities."
           },
           {
@@ -276,7 +285,7 @@
               8
             ],
             "details": "Implement an MRP service that calculates required quantities of raw materials based on production targets. Create functions to scale recipe ingredients according to batch size. Add support for unit conversions between different measurement systems. Include inventory integration to check material availability. Implement batch optimization algorithms to minimize waste.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Test MRP calculations with various production volumes. Verify unit conversions work correctly. Test integration with inventory system using mock data. Validate optimization algorithms with known test cases."
           },
           {
@@ -290,7 +299,7 @@
               9
             ],
             "details": "Create a responsive recipe list component with filtering, sorting, and search functionality. Build a detailed recipe view showing all recipe information, version history, and calculated costs. Implement a form component for creating and editing recipes with validation. Develop a version comparison view highlighting differences between versions. Create visualizations for cost breakdown and material requirements. Add recipe duplication functionality with a single click.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Conduct component testing for all UI elements. Test form validation with valid and invalid inputs. Verify that data is correctly displayed in all views. Test user interactions like filtering, sorting, and navigation between views. Conduct usability testing with potential users."
           }
         ]
@@ -1810,7 +1819,7 @@
     ],
     "metadata": {
       "created": "2025-07-03T04:25:45.172Z",
-      "updated": "2025-07-03T14:43:45.664Z",
+      "updated": "2025-07-03T15:02:45.322Z",
       "description": "Tasks for master context"
     }
   }

@@ -7,6 +7,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:-soluxe_dev}
       - POSTGRES_USER=${POSTGRES_USER:-soluxe}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password123}
+      - LC_ALL=C.UTF-8
     volumes:
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
@@ -14,11 +15,6 @@ services:
       - "5432:5432"
     networks:
       - soluxe-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-soluxe} -d $${POSTGRES_DB:-soluxe_dev}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   backend:
     build:
@@ -33,7 +29,7 @@ services:
       - "5001:5000"
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_started
     environment:
       - DATABASE_URL=postgres://${POSTGRES_USER:-soluxe}:${POSTGRES_PASSWORD:-password123}@db:5432/${POSTGRES_DB:-soluxe_dev}
       - PORT=5000

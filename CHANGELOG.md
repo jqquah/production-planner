@@ -2,6 +2,7 @@
 
 ### 2025-07-03
 
+- **Refactor**: Modified recipe formulation from fixed quantity-based ingredients to a more flexible percentage-based system.
 - **Feat**: Implemented full CRUD functionality for the Recipe Management module, including frontend modals for adding, editing, and deleting recipes, along with the supporting backend API.
 
 - **Feat**: Implemented full CRUD functionality for the Raw Materials Management module, including the frontend UI and backend API.

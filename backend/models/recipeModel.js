@@ -10,9 +10,9 @@ const getAllRecipes = async () => {
 };
 
 /**
- * Retrieves a single recipe by its ID, including its ingredients and total cost.
+ * Retrieves a single recipe by its ID, including its ingredients (now percentages).
  * @param {number} id - The ID of the recipe to retrieve.
- * @returns {Promise<object|null>} The recipe object with ingredients and cost, or null if not found.
+ * @returns {Promise<object|null>} The recipe object with ingredients, or null if not found.
  */
 const getRecipeById = async (id) => {
     const recipeResult = await pool.query(
@@ -35,33 +35,35 @@ const getRecipeById = async (id) => {
 
     const ingredientsResult = await pool.query(
         `SELECT
-            ri.material_id,
-            ri.quantity,
-            ri.unit,
-            m.name,
-            m.cost_per_unit
-         FROM recipe_ingredients ri
-         JOIN materials m ON ri.material_id = m.id
-         WHERE ri.recipe_id = $1`,
+            rm.material_id,
+            rm.percentage,
+            m.name as material_name, -- Alias to match frontend expectation
+            m.cost_per_unit,
+            m.unit
+         FROM recipe_materials rm
+         JOIN materials m ON rm.material_id = m.id
+         WHERE rm.recipe_id = $1`,
         [id]
     );
 
     const recipe = recipeResult.rows[0];
-    recipe.ingredients = ingredientsResult.rows;
+    // Manually parse numeric fields that might be returned as strings from the DB
+    recipe.ingredients = ingredientsResult.rows.map(ing => ({
+        ...ing,
+        percentage: parseFloat(ing.percentage),
+        cost_per_unit: parseFloat(ing.cost_per_unit)
+    }));
 
-    // Calculate total cost
-    const totalCost = recipe.ingredients.reduce((total, ing) => {
-        const quantity = parseFloat(ing.quantity) || 0;
-        const cost = parseFloat(ing.cost_per_unit) || 0;
-        return total + (quantity * cost);
-    }, 0);
-    
-    recipe.total_cost = parseFloat(totalCost.toFixed(2));
+
 
     return recipe;
 };
 
-
+/**
+ * Creates a new recipe with percentage-based ingredients.
+ * @param {object} recipeData - The data for the new recipe.
+ * @returns {Promise<object>} The newly created recipe.
+ */
 const createRecipe = async (recipeData) => {
     const { name, version, description, created_by, ingredients } = recipeData;
     const client = await pool.connect();
@@ -78,8 +80,8 @@ const createRecipe = async (recipeData) => {
         if (ingredients && ingredients.length > 0) {
             for (const ingredient of ingredients) {
                 await client.query(
-                    'INSERT INTO recipe_ingredients (recipe_id, material_id, quantity, unit) VALUES ($1, $2, $3, $4)',
-                    [newRecipe.id, ingredient.material_id, ingredient.quantity, ingredient.unit]
+                    'INSERT INTO recipe_materials (recipe_id, material_id, percentage) VALUES ($1, $2, $3)',
+                    [newRecipe.id, ingredient.material_id, ingredient.percentage]
                 );
             }
         }
@@ -94,6 +96,12 @@ const createRecipe = async (recipeData) => {
     }
 };
 
+/**
+ * Updates an existing recipe with percentage-based ingredients.
+ * @param {number} id - The ID of the recipe to update.
+ * @param {object} recipeData - The new data for the recipe.
+ * @returns {Promise<object>} The updated recipe.
+ */
 const updateRecipe = async (id, recipeData) => {
     const { name, version, description, ingredients } = recipeData;
     const client = await pool.connect();
@@ -112,13 +120,14 @@ const updateRecipe = async (id, recipeData) => {
 
         const updatedRecipe = recipeResult.rows[0];
 
-        await client.query('DELETE FROM recipe_ingredients WHERE recipe_id = $1', [id]);
+        // Clear existing ingredients and add the new ones
+        await client.query('DELETE FROM recipe_materials WHERE recipe_id = $1', [id]);
 
         if (ingredients && ingredients.length > 0) {
             for (const ingredient of ingredients) {
                 await client.query(
-                    'INSERT INTO recipe_ingredients (recipe_id, material_id, quantity, unit) VALUES ($1, $2, $3, $4)',
-                    [id, ingredient.material_id, ingredient.quantity, ingredient.unit]
+                    'INSERT INTO recipe_materials (recipe_id, material_id, percentage) VALUES ($1, $2, $3)',
+                    [id, ingredient.material_id, ingredient.percentage]
                 );
             }
         }
@@ -133,6 +142,10 @@ const updateRecipe = async (id, recipeData) => {
     }
 };
 
+/**
+ * Deletes a recipe from the database.
+ * @param {number} id - The ID of the recipe to delete.
+ */
 const deleteRecipe = async (id) => {
     const result = await pool.query('DELETE FROM recipes WHERE id = $1 RETURNING *', [id]);
     if (result.rowCount === 0) {

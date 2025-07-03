@@ -5,7 +5,31 @@ import AddRecipeModal from './AddRecipeModal';
 import EditRecipeModal from './EditRecipeModal';
 import ViewRecipeModal from './ViewRecipeModal';
 import './Recipes.css';
-import { RecipeListItem, FullRecipe } from '../../types';
+// Temporarily defining types here to bypass build cache issues
+interface RecipeListItem {
+  id: number;
+  name: string;
+  version: string;
+  description: string;
+  created_at: string;
+}
+
+interface IngredientDetail {
+  material_id: number;
+  material_name: string;
+  percentage: number;
+  cost_per_unit: number;
+  unit: string;
+}
+
+interface FullRecipe {
+  id: number;
+  name: string;
+  version: string;
+  description: string;
+  ingredients: IngredientDetail[];
+  total_cost?: number;
+}
 
 const Recipes: React.FC = () => {
   const [recipes, setRecipes] = useState<RecipeListItem[]>([]);

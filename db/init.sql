@@ -1,3 +1,5 @@
+
+
 -- Enum Types
 CREATE TYPE user_role AS ENUM ('admin', 'production_manager', 'production_staff');
 CREATE TYPE production_status AS ENUM ('Pending', 'In Progress', 'Completed', 'Cancelled');
@@ -47,14 +49,12 @@ CREATE TABLE recipes (
     UNIQUE(name, version)
 );
 
--- Recipe Ingredients Table (Join table for Recipes and Materials)
-CREATE TABLE recipe_ingredients (
-    id SERIAL PRIMARY KEY,
-    recipe_id INTEGER NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
-    material_id INTEGER NOT NULL REFERENCES materials(id),
-    quantity NUMERIC(10, 2) NOT NULL,
-    unit VARCHAR(50),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+-- Recipe Materials Table (Join table for Recipes and Materials)
+CREATE TABLE recipe_materials (
+    recipe_id INT REFERENCES recipes(id) ON DELETE CASCADE,
+    material_id INT REFERENCES materials(id),
+    percentage NUMERIC(5, 2) NOT NULL CHECK (percentage > 0 AND percentage <= 100),
+    PRIMARY KEY (recipe_id, material_id)
 );
 
 -- Production Batches Table
@@ -93,3 +93,8 @@ CREATE TABLE quality_checks (
 -- For production, use a more secure method to create the first admin user
 -- Default admin user with a real password hash (password: "password")
 INSERT INTO users (username, email, password_hash, role) VALUES ('admin', 'admin@example.com', '$2b$10$cwT/u27xY4wD3gB.0c.a.u/2L.p2.5s.3s.4s.5s.6s.7s.8s.9s.0s', 'admin');
+
+-- Grant all privileges to the soluxe user on all tables and sequences created.
+-- This is necessary because the init script runs as the 'postgres' user.
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO soluxe;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO soluxe;

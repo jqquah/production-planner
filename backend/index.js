@@ -17,12 +17,14 @@ require('./db'); // Ensures the database pool is initialized
 console.log('[SUCCESS] Database module loaded.');
 
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 5000;
 
 console.log(`[INIT] Starting server setup on port ${port}...`);
 
 console.log('[INIT] Configuring middleware...');
+app.use(cors({ origin: 'http://localhost:3000' })); // Allow requests from frontend
 app.use(express.json({ extended: false }));
 console.log('[SUCCESS] Middleware configured.');
 

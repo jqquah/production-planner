@@ -1,8 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import axios from 'axios';
+// Temporarily defining types here to bypass build cache issues
+interface Material {
+  id: number;
+  name: string;
+  unit: string;
+  cost_per_unit: number;
+}
 
-import { Material, IngredientFormState } from '../../types';
+interface IngredientFormState {
+  material_id: string;
+  percentage: string;
+}
+
+const initialIngredientState: IngredientFormState = {
+  material_id: '',
+  percentage: '',
+};
 
 interface AddRecipeModalProps {
   show: boolean;
@@ -14,7 +29,7 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ show, onHide, onRecipeA
   const [name, setName] = useState('');
   const [version, setVersion] = useState('1.0.0');
   const [description, setDescription] = useState('');
-  const [ingredients, setIngredients] = useState<IngredientFormState[]>([{ material_id: '', quantity: '', unit: '' }]);
+  const [ingredients, setIngredients] = useState<IngredientFormState[]>([initialIngredientState]);
   const [availableMaterials, setAvailableMaterials] = useState<Material[]>([]);
   const [error, setError] = useState('');
 
@@ -22,32 +37,25 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ show, onHide, onRecipeA
     if (show) {
       const fetchMaterials = async () => {
         try {
-          const response = await axios.get<Material[]>('/api/materials');
-          setAvailableMaterials(response.data);
+          const res = await axios.get<Material[]>('/api/materials');
+          setAvailableMaterials(res.data);
         } catch (err) {
-          setError('Failed to fetch materials.');
+          console.error('Failed to fetch materials', err);
         }
       };
       fetchMaterials();
     }
   }, [show]);
 
-  const handleIngredientChange = (index: number, field: keyof IngredientFormState, value: string) => {
+  const handleIngredientChange = (index: number, event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
     const newIngredients = [...ingredients];
-    newIngredients[index][field] = value;
-
-    if (field === 'material_id') {
-        const selectedMaterial = availableMaterials.find(m => m.id === parseInt(value, 10));
-        if (selectedMaterial) {
-            newIngredients[index].unit = selectedMaterial.unit;
-        }
-    }
-
+    newIngredients[index] = { ...newIngredients[index], [name as keyof IngredientFormState]: value };
     setIngredients(newIngredients);
   };
 
   const addIngredient = () => {
-    setIngredients([...ingredients, { material_id: '', quantity: '', unit: '' }]);
+    setIngredients([...ingredients, initialIngredientState]);
   };
 
   const removeIngredient = (index: number) => {
@@ -57,35 +65,42 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ show, onHide, onRecipeA
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError(''); // Clear previous errors
 
-    if (!name || !version) {
-      setError('Recipe Name and Version are required.');
+    // Validate that the percentages sum to 100
+    const totalPercentage = ingredients.reduce((sum, ing) => {
+      return sum + (parseFloat(ing.percentage) || 0);
+    }, 0);
+
+    // Use a small tolerance for floating point comparison
+    if (Math.abs(totalPercentage - 100) > 0.001) {
+      setError('The sum of all ingredient percentages must be exactly 100%.');
       return;
     }
 
-    const payload = {
+    const recipeData = {
       name,
       version,
       description,
-      ingredients: ingredients.filter(ing => ing.material_id && ing.quantity).map(ing => ({
+      ingredients: ingredients.filter(ing => ing.material_id && ing.percentage).map(ing => ({
         ...ing,
         material_id: parseInt(ing.material_id, 10),
-        quantity: parseFloat(ing.quantity)
+        percentage: parseFloat(ing.percentage)
       })),
     };
 
     try {
-      await axios.post('/api/recipes', payload);
+      await axios.post('/api/recipes', recipeData);
       onRecipeAdded();
       onHide();
       // Reset form
       setName('');
       setVersion('1.0.0');
       setDescription('');
-      setIngredients([{ material_id: '', quantity: '', unit: '' }]);
+      setIngredients([initialIngredientState]);
     } catch (err: any) {
-      setError(err.response?.data?.msg || 'Failed to add recipe.');
+        const errorMsg = err.response?.data?.errors?.[0]?.msg || err.response?.data?.msg || 'Failed to add recipe.';
+        setError(errorMsg);
     }
   };
 
@@ -95,72 +110,74 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ show, onHide, onRecipeA
         <Modal.Title>Add New Recipe</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={2}>Name</Form.Label>
-                <Col sm={10}>
-                <Form.Control type="text" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} required />
-                </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={2}>Version</Form.Label>
-                <Col sm={10}>
-                <Form.Control type="text" value={version} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVersion(e.target.value)} required />
-                </Col>
-            </Form.Group>
-            <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={2}>Description</Form.Label>
-                <Col sm={10}>
-                <Form.Control as="textarea" rows={3} value={description} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)} />
-                </Col>
-            </Form.Group>
+        <Form id="recipe-form" onSubmit={handleSubmit}>
+          {error && <Alert variant="danger">{error}</Alert>}
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm={2}>Name</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} required />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm={2}>Version</Form.Label>
+            <Col sm={10}>
+              <Form.Control type="text" value={version} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVersion(e.target.value)} required />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="mb-3">
+            <Form.Label column sm={2}>Description</Form.Label>
+            <Col sm={10}>
+              <Form.Control as="textarea" rows={3} value={description} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)} />
+            </Col>
+          </Form.Group>
 
-            <hr />
-            <h5>Ingredients</h5>
-            {ingredients.map((ingredient, index) => (
-                <Row key={index} className="mb-2 align-items-center">
-                <Col md={5}>
-                    <Form.Select
-                    aria-label="Select Material"
+          <hr />
+          <h5>Ingredients</h5>
+          {ingredients.map((ingredient, index) => (
+            <Row key={index} className="mb-3 align-items-center">
+              <Col md={6}>
+                <Form.Group controlId={`form-material-${index}`}>
+                  <Form.Label>Material</Form.Label>
+                  <Form.Select
+                    aria-label={`Material for ingredient ${index + 1}`}
                     value={ingredient.material_id}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleIngredientChange(index, 'material_id', e.target.value)}
-                    >
+                    name="material_id"
+                    onChange={(e) => handleIngredientChange(index, e)}
+                    required
+                  >
                     <option value="">Select Material</option>
                     {availableMaterials.map((material) => (
-                        <option key={material.id} value={material.id}>{material.name}</option>
+                      <option key={material.id} value={material.id}>{material.name}</option>
                     ))}
-                    </Form.Select>
-                </Col>
-                <Col md={3}>
-                    <Form.Control
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group controlId={`form-percentage-${index}`}>
+                  <Form.Label>Percentage (%)</Form.Label>
+                  <Form.Control
                     type="number"
-                    placeholder="Quantity"
-                    value={ingredient.quantity}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleIngredientChange(index, 'quantity', e.target.value)}
-                    />
-                </Col>
-                <Col md={3}>
-                    <Form.Control
-                    type="text"
-                    placeholder="Unit"
-                    value={ingredient.unit}
-                    readOnly
-                    />
-                </Col>
-                <Col md={1}>
-                    <Button variant="danger" size="sm" onClick={() => removeIngredient(index)}>X</Button>
-                </Col>
-                </Row>
-            ))}
-            <Button variant="secondary" onClick={addIngredient} className="mt-2">
-                Add Ingredient
-            </Button>
+                    name="percentage"
+                    value={ingredient.percentage}
+                    onChange={(e) => handleIngredientChange(index, e)}
+                    placeholder="e.g., 80.5"
+                    required
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={2} className="d-flex align-items-end">
+                <Button variant="danger" onClick={() => removeIngredient(index)} className="w-100">X</Button>
+              </Col>
+            </Row>
+          ))}
+          <Button variant="secondary" onClick={addIngredient} className="mt-2">
+            Add Ingredient
+          </Button>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onHide}>Cancel</Button>
-        <Button variant="primary" onClick={handleSubmit}>Save Recipe</Button>
+        <Button variant="secondary" onClick={onHide}>Close</Button>
+        <Button variant="primary" type="submit" form="recipe-form">Save Recipe</Button>
       </Modal.Footer>
     </Modal>
   );

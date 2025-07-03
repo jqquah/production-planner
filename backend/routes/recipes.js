@@ -34,16 +34,32 @@ router.get('/:id', auth, async (req, res) => {
 
 const { check, validationResult } = require('express-validator');
 
+// Validation middleware for recipe ingredients
+const ingredientsValidator = [
+    check('ingredients', 'Ingredients must be an array').optional().isArray(),
+    check('ingredients.*.material_id', 'Each ingredient must have a material ID').isInt(),
+    check('ingredients.*.percentage', 'Each ingredient must have a percentage').isNumeric(),
+    check('ingredients').custom(ingredients => {
+        if (!ingredients || ingredients.length === 0) {
+            return true; // No ingredients to validate, or handled by another validator
+        }
+        const totalPercentage = ingredients.reduce((sum, ing) => sum + parseFloat(ing.percentage || 0), 0);
+        if (Math.abs(totalPercentage - 100) > 0.01) { // Use a tolerance for floating point math
+            throw new Error('The sum of ingredient percentages must be exactly 100.');
+        }
+        return true;
+    })
+];
+
 // @route   POST api/recipes
 // @desc    Create a new recipe
 // @access  Private
-router.post('/', [auth, [
+router.post('/', [
+    auth,
     check('name', 'Name is required').not().isEmpty(),
     check('version', 'Version is required').not().isEmpty(),
-    check('ingredients', 'Ingredients must be an array').optional().isArray(),
-    check('ingredients.*.material_id', 'Each ingredient must have a material ID').isInt(),
-    check('ingredients.*.quantity', 'Each ingredient must have a quantity').isNumeric(),
-]], async (req, res) => {
+    ...ingredientsValidator
+], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -61,10 +77,12 @@ router.post('/', [auth, [
 // @route   PUT api/recipes/:id
 // @desc    Update a recipe
 // @access  Private
-router.put('/:id', [auth, [
+router.put('/:id', [
+    auth,
     check('name', 'Name is required').not().isEmpty(),
     check('version', 'Version is required').not().isEmpty(),
-]], async (req, res) => {
+    ...ingredientsValidator
+], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });

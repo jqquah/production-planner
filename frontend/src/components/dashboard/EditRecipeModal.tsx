@@ -2,7 +2,37 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import axios from 'axios';
 
-import { FullRecipe, Material, IngredientFormState } from '../../types';
+// Temporarily defining types here to bypass build cache issues
+interface Material {
+  id: number;
+  name: string;
+  unit: string;
+  cost_per_unit: number;
+}
+interface IngredientDetail {
+  material_id: number;
+  material_name: string;
+  percentage: number;
+  cost_per_unit: number;
+  unit: string;
+}
+interface FullRecipe {
+  id: number;
+  name: string;
+  version: string;
+  description: string;
+  ingredients: IngredientDetail[];
+  total_cost?: number;
+}
+interface IngredientFormState {
+  material_id: string;
+  percentage: string;
+}
+
+const initialIngredientState: IngredientFormState = {
+  material_id: '',
+  percentage: '',
+};
 
 interface EditRecipeModalProps {
   show: boolean;
@@ -40,38 +70,28 @@ const EditRecipeModal: React.FC<EditRecipeModalProps> = ({ show, onHide, onRecip
       setName(recipe.name);
       setVersion(recipe.version);
       setDescription(recipe.description);
-      // Convert numeric recipe data to string-based form state
       const formIngredients = recipe.ingredients.map(ing => ({
         material_id: ing.material_id.toString(),
-        quantity: ing.quantity.toString(),
-        unit: ing.unit || '',
+        percentage: ing.percentage.toString(),
       }));
       setIngredients(formIngredients);
     } else {
-      // Reset form when no recipe is selected (or modal is hidden)
       setName('');
       setVersion('');
       setDescription('');
-      setIngredients([]);
+      setIngredients([initialIngredientState]);
     }
-  }, [recipe]);
+  }, [recipe, show]);
 
-  const handleIngredientChange = (index: number, field: keyof IngredientFormState, value: string) => {
+  const handleIngredientChange = (index: number, event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
     const newIngredients = [...ingredients];
-    newIngredients[index][field] = value;
-
-    if (field === 'material_id') {
-        const selectedMaterial = availableMaterials.find(m => m.id.toString() === value);
-        if (selectedMaterial) {
-            newIngredients[index].unit = selectedMaterial.unit;
-        }
-    }
-
+    newIngredients[index] = { ...newIngredients[index], [name as keyof IngredientFormState]: value };
     setIngredients(newIngredients);
   };
 
   const handleAddIngredient = () => {
-    setIngredients([...ingredients, { material_id: '', quantity: '', unit: '' }]);
+    setIngredients([...ingredients, initialIngredientState]);
   };
 
   const handleRemoveIngredient = (index: number) => {
@@ -83,21 +103,25 @@ const EditRecipeModal: React.FC<EditRecipeModalProps> = ({ show, onHide, onRecip
     e.preventDefault();
     if (!recipe) return;
 
-    if (ingredients.some(ing => !ing.material_id || ing.material_id === '' || !ing.quantity || parseFloat(ing.quantity) <= 0)) {
-        setError('Please select a material and enter a valid quantity for all ingredients.');
-        return;
-    }
     setError(null);
+
+    const totalPercentage = ingredients.reduce((sum, ing) => {
+      return sum + (parseFloat(ing.percentage) || 0);
+    }, 0);
+
+    if (Math.abs(totalPercentage - 100) > 0.001) {
+      setError('The sum of all ingredient percentages must be exactly 100%.');
+      return;
+    }
 
     const payload = {
       name,
       version,
       description,
-      ingredients: ingredients.map(({ unit, ...rest }) => ({ 
-          ...rest, 
-          material_id: parseInt(rest.material_id, 10), 
-          quantity: parseFloat(rest.quantity) 
-      })),
+      ingredients: ingredients.map(ing => ({ 
+          material_id: parseInt(ing.material_id, 10), 
+          percentage: parseFloat(ing.percentage) 
+      })).filter(ing => ing.material_id && ing.percentage > 0),
     };
 
     try {
@@ -105,7 +129,8 @@ const EditRecipeModal: React.FC<EditRecipeModalProps> = ({ show, onHide, onRecip
       onRecipeUpdated();
       onHide();
     } catch (err: any) {
-      setError(err.response?.data?.msg || 'Failed to update recipe. Please try again.');
+      const errorMsg = err.response?.data?.errors?.[0]?.msg || err.response?.data?.msg || 'Failed to update recipe.';
+      setError(errorMsg);
       console.error(err);
     }
   };
@@ -116,64 +141,65 @@ const EditRecipeModal: React.FC<EditRecipeModalProps> = ({ show, onHide, onRecip
         <Modal.Title>Edit Recipe</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit}>
+        <Form id="edit-recipe-form" onSubmit={handleSubmit}>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={2}>Name</Form.Label>
                 <Col sm={10}>
-                <Form.Control type="text" value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} required />
+                <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} required />
                 </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={2}>Version</Form.Label>
                 <Col sm={10}>
-                <Form.Control type="text" value={version} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setVersion(e.target.value)} required />
+                <Form.Control type="text" value={version} onChange={(e) => setVersion(e.target.value)} required />
                 </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-3">
                 <Form.Label column sm={2}>Description</Form.Label>
                 <Col sm={10}>
-                <Form.Control as="textarea" rows={3} value={description} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)} />
+                <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
                 </Col>
             </Form.Group>
 
             <hr />
             <h5>Ingredients</h5>
             {ingredients.map((ingredient, index) => (
-                <Row key={index} className="mb-2 align-items-center">
-                <Col md={5}>
-                    <Form.Select
-                    aria-label="Select Material"
-                    value={ingredient.material_id}
-                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleIngredientChange(index, 'material_id', e.target.value)}
-                    >
-                    <option value="">Select Material</option>
-                    {availableMaterials.map((material) => (
-                        <option key={material.id} value={material.id.toString()}>
-                            {material.name}
-                        </option>
-                    ))}
-                    </Form.Select>
-                </Col>
-                <Col md={3}>
-                    <Form.Control
-                    type="number"
-                    placeholder="Quantity"
-                    value={ingredient.quantity}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleIngredientChange(index, 'quantity', e.target.value)}
-                    />
-                </Col>
-                <Col md={3}>
-                    <Form.Control
-                    type="text"
-                    placeholder="Unit"
-                    value={ingredient.unit}
-                    readOnly
-                    />
-                </Col>
-                <Col md={1}>
-                    <Button variant="danger" size="sm" onClick={() => handleRemoveIngredient(index)}>X</Button>
-                </Col>
+                <Row key={index} className="mb-3 align-items-center">
+                  <Col md={6}>
+                    <Form.Group controlId={`edit-form-material-${index}`}>
+                      <Form.Label>Material</Form.Label>
+                      <Form.Select
+                        name="material_id"
+                        value={ingredient.material_id}
+                        onChange={(e) => handleIngredientChange(index, e)}
+                        required
+                      >
+                        <option value="">Select Material</option>
+                        {availableMaterials.map((material) => (
+                            <option key={material.id} value={material.id.toString()}>
+                                {material.name}
+                            </option>
+                        ))}
+                      </Form.Select>
+                    </Form.Group>
+                  </Col>
+                  <Col md={4}>
+                    <Form.Group controlId={`edit-form-percentage-${index}`}>
+                      <Form.Label>Percentage (%)</Form.Label>
+                      <Form.Control
+                        type="number"
+                        name="percentage"
+                        placeholder="e.g., 80.5"
+                        value={ingredient.percentage}
+                        onChange={(e) => handleIngredientChange(index, e)}
+                        required
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={2} className="d-flex align-items-end">
+                    <Button variant="danger" onClick={() => handleRemoveIngredient(index)} className="w-100">X</Button>
+                  </Col>
                 </Row>
             ))}
             <Button variant="secondary" onClick={handleAddIngredient} className="mt-2">
@@ -183,7 +209,7 @@ const EditRecipeModal: React.FC<EditRecipeModalProps> = ({ show, onHide, onRecip
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>Cancel</Button>
-        <Button variant="primary" onClick={handleSubmit}>Save Changes</Button>
+        <Button variant="primary" type="submit" form="edit-recipe-form">Save Changes</Button>
       </Modal.Footer>
     </Modal>
   );

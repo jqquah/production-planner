@@ -65,7 +65,7 @@ router.post(
         }
       );
     } catch (err) {
-      console.error(err.message);
+      console.error('Error in /register route:', err);
       res.status(500).send('Server error');
     }
   }
@@ -118,7 +118,7 @@ router.post(
         }
       );
     } catch (err) {
-      console.error(err.message);
+      console.error('Error in /login route:', err);
       res.status(500).send('Server error');
     }
   }

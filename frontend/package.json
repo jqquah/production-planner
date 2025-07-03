@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://backend:5000",
+  "proxy": "http://host.docker.internal:5001",
   "dependencies": {
     "@types/axios": "^0.9.36",
     "@types/node": "^16.18.11",
