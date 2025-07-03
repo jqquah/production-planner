@@ -8,7 +8,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-soluxe}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password123}
     volumes:
-      - ./db/init:/docker-entrypoint-initdb.d
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
@@ -37,7 +37,7 @@ services:
     environment:
       - DATABASE_URL=postgres://${POSTGRES_USER:-soluxe}:${POSTGRES_PASSWORD:-password123}@db:5432/${POSTGRES_DB:-soluxe_dev}
       - PORT=5000
-      - JWT_SECRET=${JWT_SECRET}
+      - JWT_SECRET=${JWT_SECRET:-a-very-secret-and-secure-key-for-jwt-that-is-long-enough}
     networks:
       - soluxe-network
 

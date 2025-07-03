@@ -1,44 +1,49 @@
-const express = require('express');
-console.log('Backend service starting...');
+console.log('[INIT] Backend service starting...');
 
-// Check for essential environment variables
+console.log('[INIT] Configuring environment variables...');
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+console.log('[INIT] Environment variables configured.');
+
+console.log('[INIT] Checking for essential environment variables...');
 if (!process.env.JWT_SECRET) {
-  console.error('FATAL ERROR: JWT_SECRET is not defined.');
+  console.error('[FATAL] JWT_SECRET is not defined.');
   process.exit(1);
 }
-console.log('JWT_SECRET found.');
+console.log('[SUCCESS] JWT_SECRET found.');
 
+console.log('[INIT] Initializing database connection...');
 require('./db'); // Ensures the database pool is initialized
+console.log('[SUCCESS] Database module loaded.');
 
+const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 
-console.log('Starting server setup...');
+console.log(`[INIT] Starting server setup on port ${port}...`);
 
-console.log('Configuring middleware...');
-// Middleware for parsing JSON bodies
+console.log('[INIT] Configuring middleware...');
 app.use(express.json({ extended: false }));
-console.log('Middleware configured.');
+console.log('[SUCCESS] Middleware configured.');
 
 app.get('/', (req, res) => {
   res.send('Backend API is running.');
 });
 
-// Define Routes
-console.log('Loading routes...');
+console.log('[INIT] Loading routes...');
 try {
   app.use('/api/auth', require('./routes/auth'));
   app.use('/api/recipes', require('./routes/recipes'));
   app.use('/api/materials', require('./routes/materials'));
   app.use('/api/production', require('./routes/production'));
-  console.log('Routes loaded successfully.');
+  console.log('[SUCCESS] Routes loaded successfully.');
 } catch (err) {
-  console.error('Error loading routes:', err);
+  console.error('[FATAL] Error loading routes:', err);
   process.exit(1);
 }
 
 app.listen(port, () => {
-  console.log(`Backend server listening on port ${port}`);
+  console.log(`[SUCCESS] Backend server listening on port ${port}`);
 });
 
-console.log('Server setup complete.');
+console.log('[INIT] Server setup complete. Waiting for connections...');

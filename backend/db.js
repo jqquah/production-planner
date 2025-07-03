@@ -2,13 +2,26 @@ const { Pool } = require('pg');
 
 console.log('Initializing database connection pool...');
 
-if (!process.env.DATABASE_URL) {
-  console.error('FATAL ERROR: DATABASE_URL environment variable is not set.');
-  process.exit(1); // Exit immediately if the database URL is missing
+let connectionString = process.env.DATABASE_URL;
+
+// If DATABASE_URL is not provided, try to construct it from individual parts
+if (!connectionString) {
+  console.log('DATABASE_URL not found, trying to construct from components...');
+  const { POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, DB_HOST, DB_PORT } = process.env;
+
+  if (POSTGRES_USER && POSTGRES_PASSWORD && POSTGRES_DB) {
+    const host = DB_HOST || 'localhost';
+    const port = DB_PORT || 5432;
+    connectionString = `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${host}:${port}/${POSTGRES_DB}`;
+    console.log('Constructed DATABASE_URL from components.');
+  } else {
+    console.error('FATAL ERROR: Database connection variables (DATABASE_URL or POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB) are not set.');
+    process.exit(1);
+  }
 }
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString,
 });
 
 pool.on('connect', () => {

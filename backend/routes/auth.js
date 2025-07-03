@@ -3,8 +3,22 @@ const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
+
+// @route   GET api/auth
+// @desc    Get logged in user
+// @access  Private
+router.get('/', auth, async (req, res) => {
+  try {
+    const user = await userModel.findUserById(req.user.id);
+    res.json(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 // @route   POST api/auth/register
 // @desc    Register a new user
@@ -22,7 +36,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { username, email, password, role } = req.body;
+    const { username, email, password } = req.body;
 
     try {
       // Check if user already exists
@@ -32,7 +46,7 @@ router.post(
       }
 
       // Save user to database
-      const newUser = await userModel.createUser(username, email, password, role || 'production_staff');
+      const newUser = await userModel.createUser(username, email, password);
 
       // Create and return JWT
       const payload = {

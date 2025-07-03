@@ -35,19 +35,34 @@ const findUserByUsername = async (username) => {
  * @param {string} role - The user's role (e.g., 'admin').
  * @returns {Promise<object>} The newly created user object, excluding the password hash.
  */
-const createUser = async (username, email, password, role) => {
+const createUser = async (username, email, password) => {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
+    // The 'role' column is intentionally omitted to allow the database to apply its default value.
     const { rows } = await pool.query(
-        'INSERT INTO users (username, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, username, email, role, created_at',
-        [username, email, passwordHash, role]
+        'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id, username, email, role, created_at',
+        [username, email, passwordHash]
     );
     return rows[0];
+};
+
+/**
+ * Finds a user by their ID.
+ * @param {string} id - The user's ID.
+ * @returns {Promise<object|undefined>} The user object if found, otherwise undefined.
+ */
+const findUserById = async (id) => {
+  const { rows } = await pool.query(
+    'SELECT id, username, email, role, created_at FROM users WHERE id = $1',
+    [id]
+  );
+  return rows[0];
 };
 
 module.exports = {
   findUserByEmail,
   findUserByUsername,
   createUser,
+  findUserById,
 };

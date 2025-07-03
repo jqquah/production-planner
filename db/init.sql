@@ -1,5 +1,5 @@
 -- Enum Types
-CREATE TYPE user_role AS ENUM ('admin', 'production_manager');
+CREATE TYPE user_role AS ENUM ('admin', 'production_manager', 'production_staff');
 CREATE TYPE production_status AS ENUM ('Pending', 'In Progress', 'Completed', 'Cancelled');
 
 -- Users Table
@@ -8,7 +8,7 @@ CREATE TABLE users (
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role user_role NOT NULL,
+    role user_role NOT NULL DEFAULT 'production_staff',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -17,7 +17,9 @@ CREATE TABLE materials (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
+    supplier VARCHAR(255),
     unit VARCHAR(50), -- e.g., kg, L, units
+    cost_per_unit NUMERIC(10, 2),
     min_stock_level NUMERIC(10, 2) DEFAULT 0,
     current_stock NUMERIC(10, 2) DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -89,4 +91,5 @@ CREATE TABLE quality_checks (
 
 -- Optional: Add a default admin user for initial setup
 -- For production, use a more secure method to create the first admin user
-INSERT INTO users (username, email, password_hash, role) VALUES ('admin', 'admin@example.com', '$2b$10$DUMMY_HASH_REPLACE_IN_PROD', 'admin');
+-- Default admin user with a real password hash (password: "password")
+INSERT INTO users (username, email, password_hash, role) VALUES ('admin', 'admin@example.com', '$2b$10$cwT/u27xY4wD3gB.0c.a.u/2L.p2.5s.3s.4s.5s.6s.7s.8s.9s.0s', 'admin');

@@ -68,7 +68,7 @@
         "dependencies": [
           20
         ],
-        "status": "pending",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -136,8 +136,36 @@
           20,
           21
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create a Dashboard Component",
+            "description": "Develop the main dashboard page that users will see after logging in. This will serve as the home base for future features.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 22
+          },
+          {
+            "id": 2,
+            "title": "Implement Logout Functionality",
+            "description": "Add a logout button to the dashboard and connect it to the AuthContext to allow users to securely log out.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 22
+          },
+          {
+            "id": 3,
+            "title": "Secure Dashboard with PrivateRoute",
+            "description": "Wrap the new dashboard component in the PrivateRoute to ensure that only authenticated users can access it.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 22
+          }
+        ]
       },
       {
         "id": 23,
@@ -150,8 +178,122 @@
           21,
           22
         ],
-        "status": "pending",
-        "subtasks": []
+        "status": "in-progress",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Backend API Development for Recipe CRUD",
+            "description": "Create RESTful API endpoints for recipe creation, reading, updating, and deletion operations.",
+            "dependencies": [],
+            "details": "Implement endpoints for: GET /recipes (list), GET /recipes/{id} (detail), POST /recipes (create), PUT /recipes/{id} (update), DELETE /recipes/{id} (delete). Include proper error handling, validation, and authentication checks. Ensure API documentation is generated.",
+            "status": "done",
+            "testStrategy": "Write unit tests for each endpoint using a testing framework. Create integration tests that verify the complete request/response cycle. Test edge cases like invalid inputs and authentication failures."
+          },
+          {
+            "id": 2,
+            "title": "Recipe Version Control Implementation",
+            "description": "Develop a system to track and manage different versions of recipes with history tracking.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create database schema for version history. Implement version creation on recipe updates. Add functionality to view, compare, and restore previous versions. Include metadata like version number, timestamp, and author for each version.",
+            "status": "in-progress",
+            "testStrategy": "Test version creation on recipe updates. Verify history retrieval accuracy. Test version comparison functionality. Ensure proper restoration of previous versions."
+          },
+          {
+            "id": 3,
+            "title": "Cost Calculation and MRP Logic",
+            "description": "Implement algorithms for recipe cost calculation based on last production cost and Material Requirements Planning functionality.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create cost calculation service that factors in ingredient costs, quantities, and overhead. Implement MRP calculation to determine required materials for production runs of various sizes. Include functionality to handle unit conversions and scaling of recipes.",
+            "status": "done",
+            "testStrategy": "Test cost calculations with known inputs and expected outputs. Verify MRP calculations for various production quantities. Test edge cases like zero quantities or missing cost data."
+          },
+          {
+            "id": 4,
+            "title": "Frontend Recipe Management Components",
+            "description": "Develop UI components for recipe management including list view, detail view, edit forms, and specialized displays.",
+            "dependencies": [
+              1,
+              2,
+              3
+            ],
+            "details": "Create responsive components for: recipe list with filtering/sorting, detailed recipe view, creation/edit form with validation, version history display, cost calculation visualization, and material requirements calculator. Ensure consistent styling and user experience.",
+            "status": "pending",
+            "testStrategy": "Write unit tests for component rendering. Create integration tests for form submissions and data display. Perform usability testing with representative users. Test responsive design across different screen sizes."
+          },
+          {
+            "id": 5,
+            "title": "Recipe Duplication and Advanced Features",
+            "description": "Implement recipe duplication functionality and additional features like validation and bulk operations.",
+            "dependencies": [
+              1,
+              4
+            ],
+            "details": "Create duplication functionality that creates a new recipe based on an existing one. Implement comprehensive validation for recipe data including ingredient compatibility checks. Add bulk operations for recipes such as archiving, categorizing, or applying tags.",
+            "status": "pending",
+            "testStrategy": "Test duplication functionality to ensure proper copying of all recipe attributes. Verify validation logic catches all potential errors. Test bulk operations with various selection sizes."
+          },
+          {
+            "id": 6,
+            "title": "Backend API for Recipe CRUD Operations",
+            "description": "Implement RESTful API endpoints for creating, reading, updating, and deleting recipes, including data models and database schema.",
+            "dependencies": [],
+            "details": "Create a Recipe model with fields for name, description, ingredients (with quantities and units), instructions, version number, and timestamps. Implement controller methods for GET (list and detail), POST, PUT, and DELETE operations. Include proper error handling and validation middleware. Set up database migrations for the recipe schema.",
+            "status": "pending",
+            "testStrategy": "Write unit tests for model validation and API endpoint functionality. Use mock database for testing. Verify all CRUD operations work correctly with appropriate status codes and response formats."
+          },
+          {
+            "id": 7,
+            "title": "Recipe Version Control System",
+            "description": "Implement version control functionality for recipes, allowing tracking of changes between versions and restoration of previous versions.",
+            "dependencies": [
+              6
+            ],
+            "details": "Extend the Recipe model to support versioning with a version number field and parent-child relationships. Create API endpoints for creating new versions, viewing version history, and restoring previous versions. Implement a diff algorithm to highlight changes between versions. Store complete recipe snapshots for each version rather than just the differences.",
+            "status": "pending",
+            "testStrategy": "Test version creation, retrieval of version history, and restoration of previous versions. Verify that version numbers increment correctly and that parent-child relationships are maintained."
+          },
+          {
+            "id": 8,
+            "title": "Recipe Cost Calculation Engine",
+            "description": "Develop logic to calculate recipe costs based on ingredient costs, including integration with the production cost system.",
+            "dependencies": [
+              6
+            ],
+            "details": "Create a cost calculation service that retrieves the latest production costs for each ingredient from the production database. Implement formulas to calculate total recipe cost based on ingredient quantities and their unit costs. Add caching mechanism for ingredient costs to improve performance. Include functionality to recalculate costs when ingredient prices change.",
+            "status": "pending",
+            "testStrategy": "Test cost calculations with various ingredient combinations and quantities. Verify integration with production cost system using mock data. Test edge cases like missing cost data or zero quantities."
+          },
+          {
+            "id": 9,
+            "title": "Material Requirements Planning (MRP) Calculator",
+            "description": "Build functionality to calculate material requirements for production planning based on recipe specifications and production volume.",
+            "dependencies": [
+              6,
+              8
+            ],
+            "details": "Implement an MRP service that calculates required quantities of raw materials based on production targets. Create functions to scale recipe ingredients according to batch size. Add support for unit conversions between different measurement systems. Include inventory integration to check material availability. Implement batch optimization algorithms to minimize waste.",
+            "status": "pending",
+            "testStrategy": "Test MRP calculations with various production volumes. Verify unit conversions work correctly. Test integration with inventory system using mock data. Validate optimization algorithms with known test cases."
+          },
+          {
+            "id": 10,
+            "title": "Recipe Management Frontend Components",
+            "description": "Develop frontend components for recipe management, including list view, detail view, edit form, version history, cost display, and MRP calculator.",
+            "dependencies": [
+              6,
+              7,
+              8,
+              9
+            ],
+            "details": "Create a responsive recipe list component with filtering, sorting, and search functionality. Build a detailed recipe view showing all recipe information, version history, and calculated costs. Implement a form component for creating and editing recipes with validation. Develop a version comparison view highlighting differences between versions. Create visualizations for cost breakdown and material requirements. Add recipe duplication functionality with a single click.",
+            "status": "pending",
+            "testStrategy": "Conduct component testing for all UI elements. Test form validation with valid and invalid inputs. Verify that data is correctly displayed in all views. Test user interactions like filtering, sorting, and navigation between views. Conduct usability testing with potential users."
+          }
+        ]
       },
       {
         "id": 24,
@@ -165,7 +307,62 @@
           22
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Backend API Development",
+            "description": "Create RESTful API endpoints for material and material batch CRUD operations",
+            "dependencies": [],
+            "details": "Develop API endpoints for creating, reading, updating, and deleting materials and material batches. Include endpoints for querying materials by various parameters (name, category, batch number, expiry date). Implement proper validation and error handling.",
+            "status": "pending",
+            "testStrategy": "Write unit tests for each endpoint using a testing framework. Test happy paths and edge cases including invalid inputs and error conditions."
+          },
+          {
+            "id": 2,
+            "title": "Inventory Adjustment Functionality",
+            "description": "Implement backend logic for inventory adjustments including adding, removing, and transferring stock",
+            "dependencies": [
+              1
+            ],
+            "details": "Create services to handle inventory transactions with proper logging. Implement stock addition, removal, and transfer between locations. Ensure data consistency and transaction integrity.",
+            "status": "pending",
+            "testStrategy": "Test inventory adjustment functions with various scenarios including edge cases like insufficient stock and concurrent modifications."
+          },
+          {
+            "id": 3,
+            "title": "Expiry and Stock Level Monitoring",
+            "description": "Develop expiry date tracking, low-stock detection, and notification systems",
+            "dependencies": [
+              2
+            ],
+            "details": "Create a monitoring service that regularly checks for materials approaching expiry dates and low stock levels. Implement notification mechanisms (email, in-app alerts) for these conditions. Include configuration options for threshold settings.",
+            "status": "pending",
+            "testStrategy": "Test with simulated data for various expiry scenarios and stock levels. Verify notifications are triggered correctly based on configured thresholds."
+          },
+          {
+            "id": 4,
+            "title": "Frontend Material Management Components",
+            "description": "Build frontend components for material listing, details, and batch entry",
+            "dependencies": [
+              1
+            ],
+            "details": "Develop UI components for material list view with filtering and sorting capabilities, material detail view showing batch information, and material batch entry form with expiry date input. Implement responsive design and accessibility features.",
+            "status": "pending",
+            "testStrategy": "Conduct component testing with various data scenarios. Perform usability testing to ensure intuitive navigation and data entry."
+          },
+          {
+            "id": 5,
+            "title": "Dashboard and Reporting Features",
+            "description": "Create stock level dashboard, alerts display, and inventory reports",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Develop a dashboard with visual indicators for stock levels, low-stock alerts display, and reporting functionality for current stock, expiring materials, and inventory history. Implement barcode scanning integration for material entry and batch validation.",
+            "status": "pending",
+            "testStrategy": "Test dashboard with various data sets to ensure accurate visualization. Verify report generation with different parameters and formats."
+          }
+        ]
       },
       {
         "id": 25,
@@ -179,7 +376,64 @@
           24
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Backend API Development for Production Batches",
+            "description": "Create RESTful API endpoints for production batch CRUD operations and implement batch status tracking functionality.",
+            "dependencies": [],
+            "details": "Develop API endpoints for creating, reading, updating, and deleting production batches. Implement status tracking (Pending, In Progress, Completed) with appropriate state transitions. Include validation for production data and error handling.",
+            "status": "pending",
+            "testStrategy": "Write unit tests for each API endpoint. Test status transitions with valid and invalid state changes. Verify validation rules are enforced correctly."
+          },
+          {
+            "id": 2,
+            "title": "Scheduling and Calendar Integration",
+            "description": "Develop scheduling functionality with calendar integration for production planning.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create scheduling system that allows production batches to be assigned to specific dates/times. Implement calendar integration to visualize production schedule. Include conflict detection for overlapping production batches and resource allocation.",
+            "status": "pending",
+            "testStrategy": "Test scheduling conflicts, calendar rendering with various time ranges, and proper time zone handling."
+          },
+          {
+            "id": 3,
+            "title": "Material Allocation System",
+            "description": "Build material allocation system linking production batches to material batches.",
+            "dependencies": [
+              1
+            ],
+            "details": "Develop functionality to allocate materials to production batches. Track material usage and availability. Implement validation to prevent over-allocation of materials. Create alerts for low material inventory.",
+            "status": "pending",
+            "testStrategy": "Test material allocation with various scenarios including sufficient and insufficient inventory. Verify correct calculation of material requirements based on batch size."
+          },
+          {
+            "id": 4,
+            "title": "Frontend Components for Batch Management",
+            "description": "Create frontend components for production batch management including list view, detail view, and creation form.",
+            "dependencies": [
+              1,
+              2,
+              3
+            ],
+            "details": "Develop production batch list view with filtering and sorting capabilities. Create detailed view for individual batches. Build batch creation form with recipe selection. Implement batch duplication functionality for recurring production.",
+            "status": "pending",
+            "testStrategy": "Conduct component testing for all UI elements. Test form validation, filtering functionality, and responsive design across different screen sizes."
+          },
+          {
+            "id": 5,
+            "title": "Production Timeline and Reporting",
+            "description": "Create production timeline view for planning and implement reporting functionality.",
+            "dependencies": [
+              2,
+              4
+            ],
+            "details": "Develop visual timeline interface for production planning. Create reporting features to track production efficiency, material usage, and batch completion rates. Implement export functionality for reports in various formats (PDF, CSV).",
+            "status": "pending",
+            "testStrategy": "Test timeline visualization with various data sets. Verify report generation accuracy and export functionality across supported formats."
+          }
+        ]
       },
       {
         "id": 26,
@@ -192,7 +446,64 @@
           25
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Backend API Development for QA Operations",
+            "description": "Create RESTful API endpoints for quality check and parameter CRUD operations with batch linking functionality.",
+            "dependencies": [],
+            "details": "Implement endpoints for: creating/updating/deleting quality checks, adding parameters to checks, linking checks to production batches, and retrieving QA data with filtering options. Include validation logic for all input data.",
+            "status": "pending",
+            "testStrategy": "Write unit tests for each endpoint using Jest, including validation tests and error handling. Create integration tests to verify batch linking functionality."
+          },
+          {
+            "id": 2,
+            "title": "Parameter Logging System",
+            "description": "Develop the system for logging quality parameters with expected vs. actual values and pass/fail determination.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create data models for parameters with fields for expected values, acceptable ranges, actual values, and pass/fail status. Implement logic to automatically determine pass/fail status based on parameter thresholds. Add functionality to track parameter history over time.",
+            "status": "pending",
+            "testStrategy": "Test parameter validation logic with boundary values. Verify pass/fail determination works correctly for various parameter types (numeric, boolean, categorical)."
+          },
+          {
+            "id": 3,
+            "title": "Frontend QA Views and Forms",
+            "description": "Build frontend components for quality check management including list view, detail view, creation form, and parameter entry interface.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Develop responsive UI components: filterable QA check list with batch association, detailed view of individual checks with parameter results, intuitive forms for creating checks and entering parameter values. Implement real-time validation and visual indicators for pass/fail status.",
+            "status": "pending",
+            "testStrategy": "Conduct component testing with React Testing Library. Perform usability testing with QA staff to ensure intuitive workflow."
+          },
+          {
+            "id": 4,
+            "title": "QA Result Notification System",
+            "description": "Implement a notification system to alert relevant personnel about QA check results, especially failed checks.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Create configurable notification rules based on check results. Implement multiple notification channels (in-app, email, optional SMS). Allow users to subscribe to specific types of QA results or batches. Include severity levels for different types of failures.",
+            "status": "pending",
+            "testStrategy": "Test notification triggers with simulated pass/fail scenarios. Verify delivery across all implemented channels. Test subscription and filtering logic."
+          },
+          {
+            "id": 5,
+            "title": "QA Report Generation",
+            "description": "Create functionality to generate comprehensive QA reports for batches, time periods, or specific quality parameters.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Implement report templates with configurable sections. Include statistical analysis of QA results, trend visualization, and failure rate tracking. Support multiple export formats (PDF, CSV, Excel). Add scheduling for automated report generation and distribution.",
+            "status": "pending",
+            "testStrategy": "Verify report accuracy with predefined test data sets. Test large data handling for performance issues. Validate all export formats for proper formatting and data integrity."
+          }
+        ]
       },
       {
         "id": 27,
@@ -209,7 +520,62 @@
           26
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Responsive Layout Foundation",
+            "description": "Implement the core responsive design framework using Material-UI components optimized for mobile devices.",
+            "dependencies": [],
+            "details": "Set up Material-UI library with custom theme configuration for factory environment. Implement responsive grid layouts that adapt to different screen sizes. Create reusable layout components that follow mobile-first principles. Ensure proper viewport configuration and touch-friendly spacing.",
+            "status": "pending",
+            "testStrategy": "Test layouts on multiple device sizes (phone, tablet) and orientations using Chrome DevTools and physical devices. Verify that all UI elements properly resize and reposition."
+          },
+          {
+            "id": 2,
+            "title": "Touch-Optimized Controls",
+            "description": "Develop large, touch-friendly UI controls suitable for factory floor use with gloves and in varied lighting conditions.",
+            "dependencies": [
+              1
+            ],
+            "details": "Design oversized buttons (min 48px), sliders, and form controls. Implement high-contrast color schemes for visibility. Add appropriate touch feedback (ripple effects, haptic feedback where supported). Ensure sufficient spacing between interactive elements (min 8px).",
+            "status": "pending",
+            "testStrategy": "Conduct usability testing with production managers wearing work gloves. Measure error rates and task completion times compared to desktop controls."
+          },
+          {
+            "id": 3,
+            "title": "Mobile-Optimized Data Entry",
+            "description": "Create simplified data entry forms and input methods optimized for mobile use on the factory floor.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Implement step-by-step form wizards to break complex inputs into manageable chunks. Add specialized input controls (number pads, barcode scanning, etc.). Create context-aware defaults and suggestions to minimize typing. Implement form validation with clear mobile-friendly error messages.",
+            "status": "pending",
+            "testStrategy": "Test form completion rates and error rates in simulated factory conditions. Compare completion times against desktop versions."
+          },
+          {
+            "id": 4,
+            "title": "Offline Capabilities Implementation",
+            "description": "Develop offline functionality to ensure the application remains usable during intermittent connectivity on the factory floor.",
+            "dependencies": [
+              3
+            ],
+            "details": "Implement service workers for offline caching of critical assets and data. Create IndexedDB storage for offline data persistence. Develop synchronization logic for when connectivity is restored. Add clear visual indicators of offline status and pending synchronization.",
+            "status": "pending",
+            "testStrategy": "Test application functionality with network connection disabled. Verify data persistence and synchronization when connection is restored."
+          },
+          {
+            "id": 5,
+            "title": "PWA and Performance Optimization",
+            "description": "Implement Progressive Web App capabilities and optimize performance for lower-powered mobile devices.",
+            "dependencies": [
+              4
+            ],
+            "details": "Create manifest.json for installable PWA experience. Implement app shell architecture for faster perceived loading. Optimize bundle size through code splitting and lazy loading. Add performance monitoring. Implement gesture-based navigation patterns (swipes, pulls) for common actions.",
+            "status": "pending",
+            "testStrategy": "Measure and compare performance metrics (FCP, TTI, etc.) on target devices. Test PWA installation process and verify offline functionality after installation."
+          }
+        ]
       },
       {
         "id": 28,
@@ -224,7 +590,61 @@
           27
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Barcode Scanning Library Integration",
+            "description": "Research, select, and integrate an appropriate barcode scanning library that works with device cameras.",
+            "dependencies": [],
+            "details": "Evaluate libraries like QuaggaJS and ZXing based on performance, compatibility, and feature set. Consider factors such as code type support (1D/2D), scanning speed, and browser compatibility. Document the selection rationale and implement basic integration.",
+            "status": "pending",
+            "testStrategy": "Create test cases with various barcode types and verify successful detection across different devices and browsers."
+          },
+          {
+            "id": 2,
+            "title": "Camera Access and Permission Handling",
+            "description": "Implement secure camera access with proper permission handling and fallback mechanisms.",
+            "dependencies": [
+              1
+            ],
+            "details": "Develop code to request camera permissions, handle user responses (accept/deny), provide clear instructions to users, and implement graceful fallbacks when permissions are denied or cameras are unavailable.",
+            "status": "pending",
+            "testStrategy": "Test permission flows on multiple devices, including permission denial scenarios and permission restoration paths."
+          },
+          {
+            "id": 3,
+            "title": "Scanning Interface and UI Components",
+            "description": "Design and implement user interface components for the barcode scanning functionality.",
+            "dependencies": [
+              2
+            ],
+            "details": "Create a responsive scanning interface with viewfinder, scanning indicators, manual entry option, and clear user instructions. Ensure the UI works across device sizes and orientations. Implement accessibility features for the scanning interface.",
+            "status": "pending",
+            "testStrategy": "Conduct usability testing with different device orientations and screen sizes. Verify accessibility compliance."
+          },
+          {
+            "id": 4,
+            "title": "Material and Batch Lookup Implementation",
+            "description": "Develop functionality to look up materials and batches using scanned barcode data.",
+            "dependencies": [
+              3
+            ],
+            "details": "Create API integration to query material and batch information based on scanned codes. Implement caching mechanisms for frequently scanned items. Design and implement the display of retrieved information in the UI.",
+            "status": "pending",
+            "testStrategy": "Test with valid and invalid barcodes, verify correct data retrieval and display, test offline functionality with cached data."
+          },
+          {
+            "id": 5,
+            "title": "Error Handling and Performance Optimization",
+            "description": "Implement comprehensive error handling and optimize scanning performance for various conditions.",
+            "dependencies": [
+              4
+            ],
+            "details": "Create user-friendly error messages for failed scans, network issues, and invalid codes. Implement scan history tracking for audit purposes. Optimize scanning algorithms for various lighting conditions, distances, and code qualities. Add manual entry fallback with validation.",
+            "status": "pending",
+            "testStrategy": "Test scanning under different lighting conditions, with damaged barcodes, and with network connectivity issues. Measure and benchmark scanning performance metrics."
+          }
+        ]
       },
       {
         "id": 29,
@@ -239,7 +659,62 @@
           28
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement User Authentication and Batch List View",
+            "description": "Create the login/authentication screen and active batches list view for the batch status update workflow.",
+            "dependencies": [],
+            "details": "Develop a secure login screen with username/password authentication. After successful login, display a list view of all active batches assigned to the production manager. Include batch ID, product name, start date, current status, and other relevant information. Implement sorting and filtering capabilities for the batch list.",
+            "status": "pending",
+            "testStrategy": "Test login with valid and invalid credentials. Verify that only active batches are displayed. Test sorting and filtering functionality."
+          },
+          {
+            "id": 2,
+            "title": "Develop Batch Scanning and Status Update Interface",
+            "description": "Create the barcode scanning interface and status update form with large buttons for easy interaction.",
+            "dependencies": [
+              1
+            ],
+            "details": "Implement a barcode scanning interface that allows production managers to quickly identify batches. Design a status update form with large, touch-friendly buttons for different status options (e.g., 'In Progress', 'Completed', 'On Hold', 'Rejected'). Ensure the interface is optimized for factory floor use with high contrast colors and clear visual feedback.",
+            "status": "pending",
+            "testStrategy": "Test barcode scanning with various batch codes. Verify that the correct batch information is retrieved. Test status updates with each possible status option."
+          },
+          {
+            "id": 3,
+            "title": "Implement Comment Entry with Speech-to-Text Integration",
+            "description": "Add optional comment entry functionality with speech-to-text capability for hands-free operation.",
+            "dependencies": [
+              2
+            ],
+            "details": "Integrate a speech-to-text API to allow production managers to dictate comments instead of typing. Include a microphone button that initiates voice recording and converts speech to text. Provide a text editing option to correct any transcription errors. Ensure the speech recognition works in noisy factory environments.",
+            "status": "pending",
+            "testStrategy": "Test speech-to-text in various noise conditions. Verify accurate transcription and proper storage of comments with batch updates."
+          },
+          {
+            "id": 4,
+            "title": "Create Confirmation Screen and Next Task Suggestion",
+            "description": "Implement the confirmation screen and next task suggestion functionality to improve workflow efficiency.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Design a confirmation screen that summarizes the batch update information before final submission. Include a clear visual indicator of successful updates. Develop an algorithm to suggest the next logical batch for the production manager to update based on priority, proximity, or schedule. Implement simplified navigation between workflow steps.",
+            "status": "pending",
+            "testStrategy": "Test the confirmation process and verify that updates are correctly saved. Validate that next task suggestions are relevant and helpful."
+          },
+          {
+            "id": 5,
+            "title": "Implement Error Handling and Status History Tracking",
+            "description": "Add comprehensive error handling for edge cases and implement status update history tracking.",
+            "dependencies": [
+              4
+            ],
+            "details": "Develop error handling for barcode scan failures, incomplete submissions, and network connectivity issues. Implement offline mode functionality that queues updates when connectivity is lost. Create a status history tracking system that logs all status changes with timestamps, user information, and comments. Design a history view that allows managers to review past updates.",
+            "status": "pending",
+            "testStrategy": "Test error scenarios including network disconnection during updates. Verify that history tracking accurately records all status changes and displays them correctly in the history view."
+          }
+        ]
       },
       {
         "id": 30,
@@ -254,7 +729,62 @@
           26
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Backend API Development for Report Generation",
+            "description": "Create RESTful API endpoints for generating and retrieving various report types including production efficiency, material traceability, quality assurance, inventory status, and expiry tracking.",
+            "dependencies": [],
+            "details": "1. Design API schema for report generation\n2. Implement endpoints for each report type\n3. Create data aggregation services\n4. Add filtering capabilities by date range, product type, and production line\n5. Implement caching for frequently accessed reports\n6. Add authentication and authorization checks",
+            "status": "pending",
+            "testStrategy": "Unit tests for each endpoint, integration tests with mock data, load testing for performance under high request volume"
+          },
+          {
+            "id": 2,
+            "title": "Data Processing and Calculation Logic",
+            "description": "Develop the core calculation engine to process raw manufacturing data into meaningful metrics and KPIs for all report types.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Create data transformation services\n2. Implement efficiency calculation algorithms\n3. Build material traceability chains\n4. Develop quality metrics aggregation\n5. Create inventory status calculation logic\n6. Implement expiry prediction algorithms\n7. Optimize query performance for large datasets",
+            "status": "pending",
+            "testStrategy": "Unit tests with known input/output pairs, benchmark tests for performance, validation against manual calculations"
+          },
+          {
+            "id": 3,
+            "title": "Frontend Report Interface Components",
+            "description": "Build user interface components for report selection, parameter configuration, and data visualization with interactive charts and graphs.",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Create report selection dashboard\n2. Implement date range and filter controls\n3. Build chart components for different data types\n4. Add interactive elements for data exploration\n5. Implement responsive design for mobile compatibility\n6. Create export functionality for PDF and CSV formats\n7. Add print-friendly layouts",
+            "status": "pending",
+            "testStrategy": "Component tests, user acceptance testing, cross-browser compatibility testing, accessibility compliance checks"
+          },
+          {
+            "id": 4,
+            "title": "Scheduled Report Generation System",
+            "description": "Implement a system for automatic generation of reports on predefined schedules with email delivery capabilities.",
+            "dependencies": [
+              2
+            ],
+            "details": "1. Create scheduling service with cron-like functionality\n2. Implement report generation queue\n3. Build email template system\n4. Add attachment generation for PDF/CSV reports\n5. Create user preferences for report scheduling\n6. Implement retry logic for failed report generation\n7. Add logging and monitoring",
+            "status": "pending",
+            "testStrategy": "Integration tests with time mocking, email delivery verification, scheduled task execution validation"
+          },
+          {
+            "id": 5,
+            "title": "Executive Dashboard with Key Metrics",
+            "description": "Develop a comprehensive dashboard displaying critical manufacturing KPIs and metrics with real-time updates and alerts.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "1. Design dashboard layout with key metric widgets\n2. Implement real-time data updates\n3. Create alert thresholds for critical metrics\n4. Add drill-down capabilities for detailed analysis\n5. Implement user-customizable layouts\n6. Create comparison views (week-over-week, month-over-month)\n7. Add trend indicators and forecasting",
+            "status": "pending",
+            "testStrategy": "End-to-end testing of dashboard functionality, performance testing with simulated real-time data, usability testing with stakeholders"
+          }
+        ]
       },
       {
         "id": 31,
@@ -270,7 +800,59 @@
           26
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Email Service Integration",
+            "description": "Research, select, and integrate an email service provider (e.g., SendGrid) for sending notification emails.",
+            "dependencies": [],
+            "details": "1. Compare email service providers based on features, pricing, and reliability\n2. Set up developer account with chosen provider\n3. Implement API integration for sending emails\n4. Create email authentication setup\n5. Develop error handling for failed email deliveries",
+            "status": "pending",
+            "testStrategy": "Test email delivery to various email providers, verify delivery rates, and check spam filtering impact."
+          },
+          {
+            "id": 2,
+            "title": "SMS Service Integration",
+            "description": "Research, select, and integrate an SMS service provider (e.g., Twilio) for sending notification text messages.",
+            "dependencies": [],
+            "details": "1. Compare SMS service providers based on features, pricing, and global coverage\n2. Set up developer account with chosen provider\n3. Implement API integration for sending SMS\n4. Set up phone number verification process\n5. Develop error handling for failed SMS deliveries",
+            "status": "pending",
+            "testStrategy": "Test SMS delivery to different carriers, verify international delivery capabilities, and monitor delivery success rates."
+          },
+          {
+            "id": 3,
+            "title": "Notification Templates System",
+            "description": "Create a template system for various notification types including low stock alerts, expiry warnings, status changes, quality failures, and maintenance notices.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "1. Design template structure with variables for dynamic content\n2. Create HTML email templates with responsive design\n3. Create plain text templates for SMS\n4. Implement template rendering engine\n5. Set up localization support for multi-language notifications",
+            "status": "pending",
+            "testStrategy": "Verify template rendering with various data inputs, check responsive design across email clients, and validate character limits for SMS templates."
+          },
+          {
+            "id": 4,
+            "title": "User Preference Management",
+            "description": "Implement a system for users to manage their notification preferences including channels, frequency, and notification types.",
+            "dependencies": [],
+            "details": "1. Design database schema for storing user preferences\n2. Create API endpoints for retrieving and updating preferences\n3. Implement default preference settings for new users\n4. Develop preference validation logic\n5. Create preference migration tools for system updates",
+            "status": "pending",
+            "testStrategy": "Test preference saving/loading, verify preference application to notification delivery, and validate preference inheritance for organizational hierarchies."
+          },
+          {
+            "id": 5,
+            "title": "Notification Frontend Components",
+            "description": "Build frontend components for notification center, preference management interface, and real-time alerts display with throttling mechanisms.",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "1. Design and implement notification center UI\n2. Create preference management interface\n3. Develop real-time notification display components\n4. Implement notification throttling logic\n5. Build notification history and archiving interface",
+            "status": "pending",
+            "testStrategy": "Conduct usability testing for the notification center, verify real-time updates function correctly, and test throttling mechanisms under high notification volume."
+          }
+        ]
       },
       {
         "id": 32,
@@ -284,7 +866,64 @@
           30
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Dashboard Layout and Navigation",
+            "description": "Design and implement the admin dashboard layout with responsive design and intuitive navigation",
+            "dependencies": [],
+            "details": "Create wireframes for dashboard layout, implement responsive grid system, design navigation menu with proper hierarchy, ensure mobile compatibility, and implement theme switching capability",
+            "status": "pending",
+            "testStrategy": "Verify responsive behavior across device sizes and test navigation paths for all admin functions"
+          },
+          {
+            "id": 2,
+            "title": "User Management Interface",
+            "description": "Build comprehensive user management section with CRUD operations, filtering, and role management",
+            "dependencies": [
+              1
+            ],
+            "details": "Implement user listing with pagination, sorting and filtering, create user detail view, build user creation/edit forms with validation, implement role assignment controls, and add account status management toggles",
+            "status": "pending",
+            "testStrategy": "Test all CRUD operations, verify filter functionality, and ensure proper role assignment validation"
+          },
+          {
+            "id": 3,
+            "title": "System Configuration Module",
+            "description": "Develop system configuration section for managing notification settings, default values, and system parameters",
+            "dependencies": [
+              1
+            ],
+            "details": "Create configuration categories, implement form controls for each setting type, add validation for parameter ranges, implement save/reset functionality, and create configuration export/import feature",
+            "status": "pending",
+            "testStrategy": "Validate that configuration changes persist correctly and test boundary conditions for all parameters"
+          },
+          {
+            "id": 4,
+            "title": "Audit Logging and System Health",
+            "description": "Implement audit log viewer and system health monitoring dashboard with visual indicators",
+            "dependencies": [
+              1,
+              3
+            ],
+            "details": "Create filterable audit log table, implement log detail view, design system health dashboard with key metrics, add status indicators for critical services, and implement real-time updates for monitoring data",
+            "status": "pending",
+            "testStrategy": "Verify log filtering accuracy and test that health indicators correctly reflect system status changes"
+          },
+          {
+            "id": 5,
+            "title": "Backup, Restore and Reporting",
+            "description": "Build backup/restore functionality and admin-specific reporting tools",
+            "dependencies": [
+              1,
+              2,
+              3
+            ],
+            "details": "Implement scheduled backup configuration, create manual backup/restore interface, develop report generation framework, implement key admin reports (user activity, system usage, error frequency), and add report export functionality",
+            "status": "pending",
+            "testStrategy": "Test backup/restore process with various data volumes and verify report accuracy against raw data"
+          }
+        ]
       },
       {
         "id": 33,
@@ -297,7 +936,64 @@
           21
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Excel Data Structure Analysis",
+            "description": "Analyze the structure and format of legacy Excel files to understand data organization and relationships.",
+            "dependencies": [],
+            "details": "Identify column headers, data types, relationships between sheets, hidden formulas, and any custom formatting or macros that affect data interpretation.",
+            "status": "pending",
+            "testStrategy": "Create a comprehensive inventory of all Excel file types, their structures, and data characteristics."
+          },
+          {
+            "id": 2,
+            "title": "Data Mapping Documentation",
+            "description": "Create detailed documentation mapping Excel data fields to corresponding database tables and columns.",
+            "dependencies": [
+              1
+            ],
+            "details": "Develop a comprehensive mapping document that shows source-to-target relationships, data transformations needed, and handling of special cases or exceptions.",
+            "status": "pending",
+            "testStrategy": "Validate mapping document with stakeholders and database administrators to ensure accuracy and completeness."
+          },
+          {
+            "id": 3,
+            "title": "Excel Parsing Utilities",
+            "description": "Develop robust utilities to extract data from various Excel file formats and structures.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Create reusable components that can handle different Excel versions, parse complex formulas, extract data from multiple sheets, and handle formatting variations.",
+            "status": "pending",
+            "testStrategy": "Test with sample Excel files of varying complexity to ensure accurate data extraction."
+          },
+          {
+            "id": 4,
+            "title": "Data Transformation Logic",
+            "description": "Build logic to transform extracted Excel data into the format required by the new database schema.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Implement data type conversions, field splitting/combining, normalization routines, and business rule application to ensure data integrity during migration.",
+            "status": "pending",
+            "testStrategy": "Create unit tests for each transformation rule and validate output against expected database formats."
+          },
+          {
+            "id": 5,
+            "title": "Validation and Error Handling",
+            "description": "Implement comprehensive validation checks and error handling mechanisms for the migration process.",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Create validation rules to check data integrity, implement error logging, develop error classification system, and create user-friendly error reports for remediation.",
+            "status": "pending",
+            "testStrategy": "Test with intentionally corrupted data to verify error detection and handling capabilities."
+          }
+        ]
       },
       {
         "id": 34,
@@ -312,7 +1008,64 @@
           32
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Develop Role-Based User Documentation",
+            "description": "Create comprehensive documentation for admin and production manager roles with detailed instructions for all system functions.",
+            "dependencies": [],
+            "details": "Develop detailed user manuals for both admin and production manager roles. Include screenshots, step-by-step instructions, and explanations of all available features and permissions. Organize content logically with a table of contents and index.",
+            "status": "pending",
+            "testStrategy": "Have representatives from each user role review documentation for accuracy and completeness. Conduct usability testing to ensure documentation addresses common questions."
+          },
+          {
+            "id": 2,
+            "title": "Create Quick-Reference and Mobile Materials",
+            "description": "Develop quick-reference guides and printable cheat sheets for common tasks and mobile workflows.",
+            "dependencies": [
+              1
+            ],
+            "details": "Based on the comprehensive documentation, extract and simplify key workflows into quick-reference guides. Design printable cheat sheets specifically for mobile workflows. Use concise language, visual aids, and a consistent format across all materials.",
+            "status": "pending",
+            "testStrategy": "Test with new users to verify they can complete tasks using only the quick-reference materials. Gather feedback on clarity and usefulness."
+          },
+          {
+            "id": 3,
+            "title": "Implement In-App Help System",
+            "description": "Build an integrated help system with contextual assistance, tooltips, and hints throughout the interface.",
+            "dependencies": [
+              1
+            ],
+            "details": "Develop a context-sensitive help system that provides relevant assistance based on the user's current location in the application. Implement tooltips for UI elements and create a hint system for complex workflows. Ensure help content is accessible from any screen.",
+            "status": "pending",
+            "testStrategy": "Conduct user testing to verify help content appears in appropriate contexts and provides useful information. Test across different devices and screen sizes."
+          },
+          {
+            "id": 4,
+            "title": "Develop Searchable Help Center",
+            "description": "Create a centralized, searchable help center that integrates all documentation and support resources.",
+            "dependencies": [
+              1,
+              2,
+              3
+            ],
+            "details": "Build a searchable help center that includes all documentation, quick-reference guides, and FAQs. Implement robust search functionality with filters and categories. Ensure the help center is accessible both within the application and as a standalone resource.",
+            "status": "pending",
+            "testStrategy": "Test search functionality with various queries to ensure relevant results are returned. Verify that all documentation is properly indexed and accessible."
+          },
+          {
+            "id": 5,
+            "title": "Create Video Tutorials and Onboarding Materials",
+            "description": "Record video tutorials for key workflows and develop interactive onboarding guides and walkthroughs.",
+            "dependencies": [
+              1,
+              4
+            ],
+            "details": "Produce high-quality video tutorials demonstrating key workflows and features. Develop interactive onboarding guides that walk new users through essential functions. Create a structured onboarding process that introduces features progressively to avoid overwhelming new users.",
+            "status": "pending",
+            "testStrategy": "Conduct user testing with new users to evaluate the effectiveness of onboarding materials. Gather feedback on video tutorial clarity and usefulness."
+          }
+        ]
       },
       {
         "id": 35,
@@ -330,7 +1083,65 @@
           32
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Test Plan Development and Test Case Creation",
+            "description": "Develop a comprehensive test plan and create detailed test cases for all user stories and workflows",
+            "dependencies": [],
+            "details": "Create a master test plan document covering all system components, including test scope, approach, resources, schedule, and deliverables. Develop detailed test cases for all user stories and workflows with clear steps, expected results, and pass/fail criteria.",
+            "status": "pending",
+            "testStrategy": "Document-based review and validation by QA team lead and project stakeholders"
+          },
+          {
+            "id": 2,
+            "title": "Automated Testing Implementation",
+            "description": "Implement automated testing suite including unit, integration, and end-to-end tests",
+            "dependencies": [
+              1
+            ],
+            "details": "Develop unit tests for all backend services using appropriate testing frameworks. Create integration tests for API endpoints to verify correct data flow. Implement end-to-end tests for key user workflows using tools like Selenium or Cypress.",
+            "status": "pending",
+            "testStrategy": "Code review, test coverage analysis, and continuous integration validation"
+          },
+          {
+            "id": 3,
+            "title": "Performance Testing Execution",
+            "description": "Conduct comprehensive performance testing including load, stress, and scalability tests",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Execute load testing to verify system behavior under expected user loads. Perform stress testing to identify breaking points. Conduct scalability testing to ensure the system can handle increasing workloads. Use tools like JMeter, Gatling, or LoadRunner.",
+            "status": "pending",
+            "testStrategy": "Benchmark against defined performance KPIs and generate detailed performance reports"
+          },
+          {
+            "id": 4,
+            "title": "Security Assessment and Testing",
+            "description": "Perform security testing including vulnerability scanning, penetration testing, and authentication/authorization testing",
+            "dependencies": [
+              2
+            ],
+            "details": "Conduct vulnerability scanning using tools like OWASP ZAP or Nessus. Perform penetration testing to identify potential security breaches. Test authentication and authorization mechanisms to ensure proper access controls.",
+            "status": "pending",
+            "testStrategy": "Follow OWASP security testing guidelines and document all findings in a security assessment report"
+          },
+          {
+            "id": 5,
+            "title": "User Acceptance Testing and Final Validation",
+            "description": "Conduct user acceptance testing with stakeholders and perform final cross-device compatibility testing",
+            "dependencies": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "details": "Facilitate user acceptance testing sessions with key stakeholders. Test mobile responsiveness across various devices and screen sizes. Document all feedback and issues. Verify that all critical functionality works as expected in production-like environments.",
+            "status": "pending",
+            "testStrategy": "Structured test sessions with stakeholders using prepared test scenarios and acceptance criteria"
+          }
+        ]
       },
       {
         "id": 36,
@@ -344,7 +1155,63 @@
           35
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Cloud Infrastructure Setup",
+            "description": "Select and configure cloud hosting provider with necessary infrastructure components",
+            "dependencies": [],
+            "details": "1. Compare AWS, Google Cloud, and Azure options\n2. Set up virtual private cloud (VPC)\n3. Configure security groups and network access controls\n4. Implement infrastructure as code using Terraform or CloudFormation\n5. Set up load balancers and CDN if needed",
+            "status": "pending",
+            "testStrategy": "Verify infrastructure deployment with automated tests and security scanning"
+          },
+          {
+            "id": 2,
+            "title": "Database Configuration and Management",
+            "description": "Set up production database with backup, scaling, and maintenance procedures",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Deploy production database instances\n2. Configure automated backups and point-in-time recovery\n3. Implement database replication for high availability\n4. Set up database monitoring\n5. Create database maintenance procedures and schedules",
+            "status": "pending",
+            "testStrategy": "Test backup and restore procedures, failover mechanisms, and performance under load"
+          },
+          {
+            "id": 3,
+            "title": "Containerization and Orchestration",
+            "description": "Implement containerized deployment with orchestration for application services",
+            "dependencies": [
+              1
+            ],
+            "details": "1. Create Docker images for all application components\n2. Set up Kubernetes or other container orchestration\n3. Configure container networking and service discovery\n4. Implement auto-scaling policies\n5. Set up container registry and image management",
+            "status": "pending",
+            "testStrategy": "Validate container builds, deployments, and scaling with integration tests"
+          },
+          {
+            "id": 4,
+            "title": "CI/CD Pipeline Implementation",
+            "description": "Create continuous integration and deployment pipeline for automated testing and deployment",
+            "dependencies": [
+              3
+            ],
+            "details": "1. Set up CI/CD tool (Jenkins, GitHub Actions, etc.)\n2. Configure build, test, and deployment stages\n3. Implement automated testing in the pipeline\n4. Set up deployment strategies (blue/green, canary)\n5. Configure approval gates for production deployments",
+            "status": "pending",
+            "testStrategy": "Verify pipeline functionality with test deployments and rollback procedures"
+          },
+          {
+            "id": 5,
+            "title": "Monitoring, Logging and Disaster Recovery",
+            "description": "Implement comprehensive monitoring, logging, and disaster recovery procedures",
+            "dependencies": [
+              2,
+              3,
+              4
+            ],
+            "details": "1. Set up application performance monitoring (APM)\n2. Configure error tracking and alerting\n3. Implement centralized logging and log aggregation\n4. Create disaster recovery plan with documented procedures\n5. Set up regular disaster recovery drills",
+            "status": "pending",
+            "testStrategy": "Test monitoring by simulating failures, verify alerts, and validate recovery procedures"
+          }
+        ]
       },
       {
         "id": 37,
@@ -358,7 +1225,61 @@
           36
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Develop Role-Specific Training Materials",
+            "description": "Create comprehensive training guides for different user roles including Admin and Production Manager roles.",
+            "dependencies": [],
+            "details": "Develop detailed documentation covering system navigation, role-specific functions, permissions, and common workflows. Include screenshots, step-by-step instructions, and troubleshooting tips.",
+            "status": "pending",
+            "testStrategy": "Review materials with subject matter experts and conduct readability assessment with sample users from each role."
+          },
+          {
+            "id": 2,
+            "title": "Create Training Environment with Sample Data",
+            "description": "Set up a dedicated training environment that mimics the production system but contains non-sensitive sample data for hands-on practice.",
+            "dependencies": [],
+            "details": "Configure a separate instance of the system with realistic but fictional data. Create training accounts with appropriate permissions for each user role. Ensure the environment resets easily between training sessions.",
+            "status": "pending",
+            "testStrategy": "Verify all key workflows can be completed in the training environment and that sample data adequately represents real-world scenarios."
+          },
+          {
+            "id": 3,
+            "title": "Develop Workshop Curriculum and Record Demos",
+            "description": "Create structured workshop materials and record screen-share demonstrations of key system workflows.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Design interactive workshop sessions with hands-on exercises. Record high-quality video demonstrations of common tasks and complex workflows. Organize content in a logical sequence from basic to advanced functions.",
+            "status": "pending",
+            "testStrategy": "Pilot the curriculum with a small group of users and collect feedback on clarity and effectiveness."
+          },
+          {
+            "id": 4,
+            "title": "Identify and Train Superusers",
+            "description": "Select and provide advanced training to designated superusers who will serve as local experts for each factory shift.",
+            "dependencies": [
+              3
+            ],
+            "details": "Develop criteria for superuser selection. Create advanced training materials covering troubleshooting, system administration, and user support techniques. Conduct intensive training sessions for selected superusers.",
+            "status": "pending",
+            "testStrategy": "Assess superusers through practical scenarios and problem-solving exercises to verify their readiness to support other users."
+          },
+          {
+            "id": 5,
+            "title": "Schedule and Conduct Training Sessions with Feedback Mechanism",
+            "description": "Organize and deliver training sessions for all users and implement a system to collect and analyze training feedback.",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Create a training schedule accommodating all shifts and departments. Develop pre and post-training assessments to measure knowledge gain. Implement a feedback collection system to continuously improve training materials and methods. Create an ongoing training plan for new users.",
+            "status": "pending",
+            "testStrategy": "Analyze assessment results and feedback data to identify knowledge gaps and training effectiveness."
+          }
+        ]
       },
       {
         "id": 38,
@@ -372,7 +1293,62 @@
           37
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Configure Communication Channels",
+            "description": "Set up and configure primary support communication channels including email and Slack integration.",
+            "dependencies": [],
+            "details": "Create dedicated support email address. Configure Slack workspace with #support channel. Set up email forwarding rules and auto-responders. Document access procedures for support team members.",
+            "status": "pending",
+            "testStrategy": "Verify email delivery and receipt. Test Slack notifications and integrations. Confirm auto-responders work correctly."
+          },
+          {
+            "id": 2,
+            "title": "Implement Issue Tracking System",
+            "description": "Select, configure and deploy an issue tracking system to manage support requests and track resolution progress.",
+            "dependencies": [
+              1
+            ],
+            "details": "Evaluate and select appropriate issue tracking software (e.g., Jira, Zendesk, Freshdesk). Configure ticket categories, statuses, and workflows. Set up user accounts and permission levels. Integrate with communication channels.",
+            "status": "pending",
+            "testStrategy": "Create test tickets through various channels. Verify workflow transitions. Test reporting capabilities and dashboard views."
+          },
+          {
+            "id": 3,
+            "title": "Develop Support Documentation",
+            "description": "Create comprehensive knowledge base and documentation for common issues, troubleshooting guides, and support processes.",
+            "dependencies": [
+              2
+            ],
+            "details": "Document common issues and solutions. Create troubleshooting guides with step-by-step instructions. Develop FAQ section. Establish documentation maintenance process. Include screenshots and visual aids where appropriate.",
+            "status": "pending",
+            "testStrategy": "Review documentation with team members for clarity and completeness. Test search functionality. Verify all links work correctly."
+          },
+          {
+            "id": 4,
+            "title": "Establish Service Level Agreements",
+            "description": "Define and document service level agreements (SLAs) for different issue types and priority levels.",
+            "dependencies": [
+              2
+            ],
+            "details": "Define issue priority levels (e.g., critical, high, medium, low). Establish response and resolution time targets for each priority level. Create escalation procedures for critical issues. Document SLA metrics and reporting process.",
+            "status": "pending",
+            "testStrategy": "Review SLAs with stakeholders for approval. Configure SLA tracking in issue system. Test escalation procedures with simulated critical issues."
+          },
+          {
+            "id": 5,
+            "title": "Implement Feedback Collection System",
+            "description": "Set up mechanisms to collect, analyze, and act upon user feedback regarding support quality and product issues.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Create post-resolution satisfaction surveys. Implement feedback collection forms on support portal. Set up regular check-ins with pilot users. Develop process for analyzing feedback trends and identifying improvement opportunities.",
+            "status": "pending",
+            "testStrategy": "Test survey delivery and response collection. Verify feedback data is properly stored and accessible. Create test reports to ensure trend analysis is possible."
+          }
+        ]
       },
       {
         "id": 39,
@@ -388,7 +1364,60 @@
           38
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Finalize Launch Preparation",
+            "description": "Complete all pre-launch activities including phased rollout plan, launch checklist, and communication strategy.",
+            "dependencies": [],
+            "details": "Consolidate the phased rollout plan with specific timelines and user groups. Finalize the launch checklist with all technical prerequisites. Prepare communication materials for different stakeholders. Ensure the launch support team is fully briefed and ready.",
+            "status": "pending",
+            "testStrategy": "Conduct a pre-launch readiness review meeting to verify all preparation items are complete and approved by stakeholders."
+          },
+          {
+            "id": 2,
+            "title": "Establish Monitoring Infrastructure",
+            "description": "Set up comprehensive monitoring systems to track system performance, errors, and user behavior during and after launch.",
+            "dependencies": [],
+            "details": "Configure enhanced monitoring tools for the launch period. Establish performance baselines for key metrics. Set up automated alerts for critical thresholds. Implement user adoption tracking mechanisms. Create dashboards for real-time visibility into system health and usage.",
+            "status": "pending",
+            "testStrategy": "Perform a mock incident to verify monitoring systems detect issues and alerts are properly triggered and received by the support team."
+          },
+          {
+            "id": 3,
+            "title": "Execute System Launch",
+            "description": "Implement the phased rollout according to the plan with continuous monitoring and support.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Follow the launch checklist step by step. Deploy the system according to the phased rollout plan. Activate the launch support team. Monitor system performance in real-time. Address any issues immediately according to severity. Communicate progress to stakeholders at predetermined milestones.",
+            "status": "pending",
+            "testStrategy": "Validate each phase of the rollout with predefined acceptance criteria before proceeding to the next phase."
+          },
+          {
+            "id": 4,
+            "title": "Manage Post-Launch Support",
+            "description": "Provide dedicated support during the critical post-launch period and implement contingency plans as needed.",
+            "dependencies": [
+              3
+            ],
+            "details": "Maintain heightened support levels according to the launch plan. Execute contingency plans for any critical issues that arise. Document all incidents and resolutions. Provide regular status updates to stakeholders. Adjust resources based on support demand patterns.",
+            "status": "pending",
+            "testStrategy": "Track support ticket resolution times and ensure they meet SLA requirements. Conduct daily review of support issues to identify patterns requiring system adjustments."
+          },
+          {
+            "id": 5,
+            "title": "Conduct Post-Launch Analysis",
+            "description": "Analyze system performance, user adoption metrics, and support issues to evaluate launch success and identify improvements.",
+            "dependencies": [
+              4
+            ],
+            "details": "Collect and analyze data from the success metrics tracking dashboard. Compare actual performance against baselines and targets. Evaluate user adoption rates and patterns. Review all support tickets and incidents. Hold scheduled post-launch review meetings with stakeholders. Document lessons learned and recommendations for future launches.",
+            "status": "pending",
+            "testStrategy": "Produce a comprehensive post-launch report with quantitative metrics and qualitative feedback from users and support team."
+          }
+        ]
       },
       {
         "id": 40,
@@ -401,7 +1430,65 @@
           39
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Feedback Collection System",
+            "description": "Design and implement mechanisms to collect user feedback through multiple channels including in-app surveys, feedback forms, and user interviews.",
+            "dependencies": [],
+            "details": "Create in-app feedback widgets, design post-interaction surveys, set up email feedback collection, implement feature request submission forms, and establish a central repository for all feedback data.",
+            "status": "pending",
+            "testStrategy": "Conduct usability testing of feedback mechanisms with a small user group before full deployment."
+          },
+          {
+            "id": 2,
+            "title": "Develop Metrics Dashboard",
+            "description": "Create a comprehensive dashboard to track system performance metrics, user engagement, and feedback trends over time.",
+            "dependencies": [
+              1
+            ],
+            "details": "Identify key performance indicators, design visualization components, implement real-time data processing, create filtering capabilities, and establish automated reporting functionality.",
+            "status": "pending",
+            "testStrategy": "Validate dashboard accuracy by comparing automated metrics with manually calculated values for a test period."
+          },
+          {
+            "id": 3,
+            "title": "Establish Improvement Prioritization Framework",
+            "description": "Create a structured methodology for evaluating and prioritizing potential system improvements based on impact, effort, and strategic alignment.",
+            "dependencies": [
+              1,
+              2
+            ],
+            "details": "Define evaluation criteria, create scoring system, design decision matrix templates, establish stakeholder review process, and document prioritization workflows.",
+            "status": "pending",
+            "testStrategy": "Test framework by applying it to historical improvement decisions and comparing outcomes."
+          },
+          {
+            "id": 4,
+            "title": "Implement A/B Testing Infrastructure",
+            "description": "Set up technical infrastructure and processes to conduct controlled experiments for UI and feature improvements.",
+            "dependencies": [
+              2
+            ],
+            "details": "Select A/B testing tools, implement user segmentation capabilities, create experiment design templates, establish statistical analysis methods, and develop experiment documentation standards.",
+            "status": "pending",
+            "testStrategy": "Conduct a pilot A/B test with a minor UI change to validate the entire testing infrastructure."
+          },
+          {
+            "id": 5,
+            "title": "Create Continuous Improvement Cycle Documentation",
+            "description": "Document the end-to-end continuous improvement process including feedback collection, analysis, prioritization, implementation, and measurement.",
+            "dependencies": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "details": "Create process flowcharts, write detailed procedures, develop training materials, establish review schedules, and create templates for all process artifacts.",
+            "status": "pending",
+            "testStrategy": "Have stakeholders review documentation and conduct a simulated improvement cycle to identify any gaps or issues."
+          }
+        ]
       },
       {
         "id": 41,
@@ -414,7 +1501,62 @@
           39
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Performance Profiling and Bottleneck Identification",
+            "description": "Conduct comprehensive performance profiling of both frontend and backend systems to identify critical bottlenecks.",
+            "dependencies": [],
+            "details": "Use Chrome DevTools and Lighthouse for frontend profiling. Implement New Relic or similar APM tools for backend profiling. Document baseline metrics including page load time, time to interactive, memory usage, and CPU utilization. Create a prioritized list of bottlenecks based on impact and effort to fix.",
+            "status": "pending",
+            "testStrategy": "Compare before/after metrics for each identified bottleneck. Document improvements in a performance dashboard."
+          },
+          {
+            "id": 2,
+            "title": "Database Optimization",
+            "description": "Optimize database queries, indexes, and connection management to improve data access performance.",
+            "dependencies": [
+              1
+            ],
+            "details": "Analyze slow query logs to identify problematic queries. Implement proper indexing strategies based on query patterns. Optimize ORM configurations and implement query caching where appropriate. Consider database sharding or read replicas for high-traffic tables if necessary.",
+            "status": "pending",
+            "testStrategy": "Measure query execution times before and after optimization. Use database monitoring tools to verify reduced load and improved throughput."
+          },
+          {
+            "id": 3,
+            "title": "Frontend Optimization",
+            "description": "Optimize frontend bundle size, implement code splitting, lazy loading, and improve asset delivery.",
+            "dependencies": [
+              1
+            ],
+            "details": "Analyze bundle size with tools like webpack-bundle-analyzer. Implement code splitting for route-based chunking. Configure lazy loading for non-critical components. Optimize images using WebP format and responsive loading. Implement critical CSS extraction and defer non-critical CSS loading.",
+            "status": "pending",
+            "testStrategy": "Measure improvements in bundle size, Time to First Byte (TTFB), First Contentful Paint (FCP), and Time to Interactive (TTI) metrics."
+          },
+          {
+            "id": 4,
+            "title": "Caching Implementation",
+            "description": "Design and implement a comprehensive caching strategy across the application stack.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Implement browser caching with appropriate cache headers. Set up CDN caching for static assets. Implement Redis or Memcached for API response caching. Configure service worker caching for offline capabilities. Implement database query result caching for frequently accessed data.",
+            "status": "pending",
+            "testStrategy": "Measure cache hit rates and response time improvements. Test application behavior under various cache invalidation scenarios."
+          },
+          {
+            "id": 5,
+            "title": "Performance Monitoring and Alerting",
+            "description": "Implement continuous performance monitoring and alerting system to maintain optimizations.",
+            "dependencies": [
+              4
+            ],
+            "details": "Set up real user monitoring (RUM) to track actual user experience. Configure synthetic monitoring for critical user flows. Implement performance budgets and automated alerts when metrics degrade. Create a performance dashboard with key metrics. Establish a regular performance review process.",
+            "status": "pending",
+            "testStrategy": "Verify alerts trigger appropriately when performance degrades. Ensure monitoring covers all critical components and user journeys."
+          }
+        ]
       },
       {
         "id": 42,
@@ -427,7 +1569,62 @@
           39
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Vulnerability Assessment and Penetration Testing",
+            "description": "Perform comprehensive security vulnerability assessment and conduct penetration testing to identify potential security weaknesses.",
+            "dependencies": [],
+            "details": "Use industry-standard tools like Nessus, OpenVAS, or Metasploit to scan for vulnerabilities. Document all findings with severity ratings. Conduct both automated and manual penetration testing focusing on OWASP Top 10 vulnerabilities.",
+            "status": "pending",
+            "testStrategy": "Verify all identified vulnerabilities are properly documented with remediation recommendations. Ensure penetration testing covers all critical systems and applications."
+          },
+          {
+            "id": 2,
+            "title": "Authentication and Authorization Review",
+            "description": "Review and strengthen authentication and authorization mechanisms, including password policies and access controls.",
+            "dependencies": [
+              1
+            ],
+            "details": "Audit current authentication methods, implement MFA where appropriate, review role-based access controls, and update password policies to enforce complexity requirements. Implement secure session management and proper token handling.",
+            "status": "pending",
+            "testStrategy": "Test authentication flows for security gaps, verify password policy enforcement, and validate proper authorization checks across different user roles."
+          },
+          {
+            "id": 3,
+            "title": "Security Headers and Rate Limiting Implementation",
+            "description": "Implement security headers, Content Security Policy (CSP), and rate limiting for sensitive endpoints to prevent common web attacks.",
+            "dependencies": [
+              1
+            ],
+            "details": "Configure HTTP security headers including X-Content-Type-Options, X-Frame-Options, and Strict-Transport-Security. Develop and implement a comprehensive CSP. Set up rate limiting for login, registration, and API endpoints to prevent brute force attacks.",
+            "status": "pending",
+            "testStrategy": "Use tools like SecurityHeaders.com to verify header implementation. Test rate limiting by simulating rapid requests to protected endpoints."
+          },
+          {
+            "id": 4,
+            "title": "Data Encryption and Code Security Review",
+            "description": "Review data encryption practices and conduct code review focused on security vulnerabilities.",
+            "dependencies": [
+              2,
+              3
+            ],
+            "details": "Audit encryption methods for data at rest and in transit. Ensure proper key management. Perform static code analysis using tools like SonarQube or Checkmarx. Conduct manual code review focusing on input validation, output encoding, and secure coding practices.",
+            "status": "pending",
+            "testStrategy": "Verify encryption implementation with cryptographic testing tools. Use both automated and manual code review techniques to identify security flaws."
+          },
+          {
+            "id": 5,
+            "title": "Dependency Updates and Security Documentation",
+            "description": "Update dependencies with security patches and create comprehensive security documentation including incident response procedures.",
+            "dependencies": [
+              4
+            ],
+            "details": "Audit all third-party libraries and dependencies for known vulnerabilities using tools like OWASP Dependency-Check. Apply necessary security patches. Create detailed documentation covering security practices, configurations, and step-by-step incident response procedures.",
+            "status": "pending",
+            "testStrategy": "Verify all dependencies are updated to secure versions. Review documentation for completeness and conduct a tabletop exercise to test incident response procedures."
+          }
+        ]
       },
       {
         "id": 43,
@@ -441,7 +1638,63 @@
           39
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Conduct WCAG 2.1 Compliance Audit",
+            "description": "Perform a comprehensive accessibility audit using WCAG 2.1 guidelines to identify all accessibility issues in the system.",
+            "dependencies": [],
+            "details": "Use automated tools like Axe or WAVE to scan all pages, manually test keyboard navigation, verify proper heading structure, check form accessibility, and document all findings in a detailed report with severity levels.",
+            "status": "pending",
+            "testStrategy": "Create a test matrix covering all WCAG 2.1 success criteria at AA level, with pass/fail results for each page and component."
+          },
+          {
+            "id": 2,
+            "title": "Implement Core Accessibility Features",
+            "description": "Add essential accessibility features including keyboard navigation, ARIA attributes, and proper focus management.",
+            "dependencies": [
+              1
+            ],
+            "details": "Ensure all interactive elements are keyboard accessible, implement proper focus indicators, add appropriate ARIA roles/states/properties to UI components, and create logical tab order throughout the application.",
+            "status": "pending",
+            "testStrategy": "Test with keyboard-only navigation on all pages, verify ARIA implementation with screen readers, and validate focus management across different user flows."
+          },
+          {
+            "id": 3,
+            "title": "Optimize Visual and Content Accessibility",
+            "description": "Ensure all visual elements and content meet accessibility standards including color contrast, text alternatives, and responsive design.",
+            "dependencies": [
+              1
+            ],
+            "details": "Verify all color combinations meet WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text), add descriptive alt text for all images, ensure text can be resized up to 200% without loss of content, and implement responsive layouts for different viewport sizes.",
+            "status": "pending",
+            "testStrategy": "Use contrast analyzers to verify all color combinations, test with screen magnification, and validate responsive behavior across devices."
+          },
+          {
+            "id": 4,
+            "title": "Create Accessible Forms and Interactive Components",
+            "description": "Ensure all forms and interactive components are fully accessible with proper labels, error handling, and instructions.",
+            "dependencies": [
+              2
+            ],
+            "details": "Implement proper form labels that are programmatically associated with inputs, provide clear error messages that are announced to screen readers, add descriptive instructions for complex inputs, ensure form validation messages are accessible, and implement accessible custom components (dropdowns, modals, etc.).",
+            "status": "pending",
+            "testStrategy": "Test all forms with screen readers, keyboard-only navigation, and voice recognition software to verify accessibility in different interaction modes."
+          },
+          {
+            "id": 5,
+            "title": "Comprehensive Testing and Documentation",
+            "description": "Perform thorough testing with assistive technologies and create detailed accessibility documentation for users and developers.",
+            "dependencies": [
+              2,
+              3,
+              4
+            ],
+            "details": "Test with popular screen readers (NVDA, JAWS, VoiceOver), conduct user testing with people who have disabilities, create an accessibility statement page, document all accessibility features, and provide guidance for content creators on maintaining accessibility.",
+            "status": "pending",
+            "testStrategy": "Create test scenarios for different disability types (visual, motor, cognitive, hearing), use multiple assistive technologies, and document all testing methodologies and results."
+          }
+        ]
       },
       {
         "id": 44,
@@ -455,12 +1708,109 @@
           39
         ],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Research and Select i18n Library",
+            "description": "Evaluate popular internationalization libraries and select the most suitable one for the project requirements.",
+            "dependencies": [],
+            "details": "Compare i18next, react-intl, FormatJS, and other popular libraries based on features, community support, documentation, and compatibility with our tech stack. Create a comparison matrix with pros and cons of each option. Make a recommendation with justification.",
+            "status": "pending",
+            "testStrategy": "Create a small proof-of-concept implementation with each candidate library to verify compatibility and ease of integration."
+          },
+          {
+            "id": 2,
+            "title": "Implement Translation Infrastructure",
+            "description": "Set up the core infrastructure for translations including file structure, loading mechanism, and integration with the selected i18n library.",
+            "dependencies": [
+              1
+            ],
+            "details": "Create translation file structure (JSON/YAML), implement dynamic loading of translation files, set up fallback mechanisms for missing translations, and integrate the selected library into the application architecture. Configure default language and locale settings.",
+            "status": "pending",
+            "testStrategy": "Write unit tests to verify translation loading, fallback behavior, and proper rendering of translated content."
+          },
+          {
+            "id": 3,
+            "title": "Extract UI Strings and Implement Language Switching",
+            "description": "Replace hardcoded strings with translation keys and implement a mechanism to switch between languages.",
+            "dependencies": [
+              2
+            ],
+            "details": "Identify and extract all user-facing text into translation files. Create translation keys following a consistent naming convention. Implement a language selector component and the logic to change languages at runtime. Ensure the UI updates appropriately when language changes.",
+            "status": "pending",
+            "testStrategy": "Create end-to-end tests that change the language and verify UI updates correctly. Test edge cases like partial translations."
+          },
+          {
+            "id": 4,
+            "title": "Implement Locale-Specific Formatting",
+            "description": "Add support for locale-specific formatting of dates, times, numbers, and other region-dependent content.",
+            "dependencies": [
+              2
+            ],
+            "details": "Implement formatting utilities for dates, times, numbers, currencies, and other locale-specific content. Create abstraction layers to ensure consistent formatting throughout the application. Test with various locales to ensure correct formatting.",
+            "status": "pending",
+            "testStrategy": "Create unit tests with sample data from different locales to verify correct formatting of dates, numbers, and currencies according to regional standards."
+          },
+          {
+            "id": 5,
+            "title": "Create Documentation and Test RTL Support",
+            "description": "Document the internationalization architecture and test support for right-to-left languages.",
+            "dependencies": [
+              3,
+              4
+            ],
+            "details": "Create comprehensive documentation covering the internationalization architecture, translation workflow, and guidelines for developers. Test the application with RTL languages like Arabic or Hebrew. Implement necessary CSS changes to support RTL layouts. Document the translation management process for content updates.",
+            "status": "pending",
+            "testStrategy": "Perform manual testing with RTL languages to identify layout issues. Create a checklist for RTL compatibility testing."
+          }
+        ]
+      },
+      {
+        "id": 45,
+        "title": "Raw Materials Management Module",
+        "description": "Develop core functionality for managing raw materials, including database schema, API endpoints, and a user interface for CRUD operations.",
+        "details": "1. Extend the existing database schema:\n   - Add additional fields to Materials table (category, supplier_info, cost, unit_of_measure, storage_requirements)\n   - Create MaterialTransactions table to track inventory movements (id, material_id, transaction_type, quantity, batch_id, timestamp, user_id)\n   - Add MaterialCategories table for classification\n   - Implement database constraints and validation rules\n\n2. Develop backend API endpoints:\n   - GET /api/materials - List all materials with filtering and pagination\n   - GET /api/materials/:id - Get material details\n   - POST /api/materials - Create new material\n   - PUT /api/materials/:id - Update material\n   - DELETE /api/materials/:id - Delete material (with safety checks)\n   - GET /api/materials/categories - List material categories\n   - GET /api/materials/transactions - List material transactions with filtering\n   - POST /api/materials/transactions - Record material transaction\n\n3. Create frontend components:\n   - Materials list view with search, filter, and sort capabilities\n   - Material detail view showing properties and transaction history\n   - Material creation/edit form with validation\n   - Material category management interface\n   - Transaction recording interface\n   - Low stock alerts visualization\n   - Material usage analytics dashboard\n\n4. Implement business logic:\n   - Automatic stock level calculations based on transactions\n   - Low stock level alerts and notifications\n   - Material expiry tracking\n   - Cost calculation and history\n   - Integration with supplier information\n\n5. Security considerations:\n   - Implement role-based access control for material management\n   - Add audit logging for all material changes\n   - Validate all inputs on both client and server side",
+        "testStrategy": "1. Unit Testing:\n   - Test all API endpoints for proper CRUD operations\n   - Verify database constraints and validation rules\n   - Test stock level calculation logic\n   - Validate transaction recording functionality\n\n2. Integration Testing:\n   - Test interaction between materials module and recipe management\n   - Verify inventory updates when recording transactions\n   - Test role-based access control for different user types\n   - Validate audit logging functionality\n\n3. UI Testing:\n   - Test material list filtering and sorting\n   - Verify form validation for material creation/editing\n   - Test transaction recording workflow\n   - Validate alert notifications for low stock\n\n4. Performance Testing:\n   - Test API response times with large material datasets\n   - Verify pagination functionality with large result sets\n   - Test transaction history loading performance\n\n5. User Acceptance Testing:\n   - Verify all CRUD operations work as expected\n   - Test the complete workflow from material creation to usage in recipes\n   - Validate reporting and analytics features\n   - Test material transaction history tracking",
+        "status": "done",
+        "dependencies": [
+          21,
+          22
+        ],
+        "priority": "medium",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Design and Create Raw Materials Database Table",
+            "description": "Update the db/init.sql file to include a new 'raw_materials' table. The table should include columns for name, description, supplier, unit of measure, cost per unit, and current stock level.",
+            "details": "<info added on 2025-07-03T13:19:03.452Z>\nThe 'materials' table already existed in the schema. This task was updated to modify the table by adding 'supplier' and 'cost_per_unit' columns to meet the module requirements.\n</info added on 2025-07-03T13:19:03.452Z>",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 45
+          },
+          {
+            "id": 2,
+            "title": "Implement Backend API for Raw Materials",
+            "description": "Create a new route file and model for handling CRUD (Create, Read, Update, Delete) operations for raw materials. The API should be protected and only accessible to authenticated users.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 45
+          },
+          {
+            "id": 3,
+            "title": "Develop Frontend UI for Raw Materials Management",
+            "description": "Create the necessary React components to list, add, edit, and delete raw materials from the dashboard. This includes a table view, forms, and API integration.",
+            "details": "",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 45
+          }
+        ]
       }
     ],
     "metadata": {
       "created": "2025-07-03T04:25:45.172Z",
-      "updated": "2025-07-03T07:57:39.816Z",
+      "updated": "2025-07-03T14:43:45.664Z",
       "description": "Tasks for master context"
     }
   }
