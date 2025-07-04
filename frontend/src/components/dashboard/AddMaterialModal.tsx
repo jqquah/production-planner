@@ -68,7 +68,11 @@ const AddMaterialModal: React.FC<AddMaterialModalProps> = ({ isOpen, onClose, on
             </div>
             <div className="col">
               <label htmlFor="cost_per_unit" className="form-label">Cost per Unit</label>
-              <input type="number" className="form-control" id="cost_per_unit" name="cost_per_unit" value={formData.cost_per_unit} onChange={handleChange} />
+              <input type="number" step="0.01" className="form-control" id="cost_per_unit" name="cost_per_unit" value={formData.cost_per_unit} onChange={handleChange} />
+            </div>
+            <div className="col">
+              <label htmlFor="min_stock_level" className="form-label">Min Stock Level</label>
+              <input type="number" step="0.01" className="form-control" id="min_stock_level" name="min_stock_level" value={formData.min_stock_level} onChange={handleChange} />
             </div>
           </div>
           {error && <p className="error-message">{error}</p>}

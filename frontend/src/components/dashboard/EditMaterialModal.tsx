@@ -10,6 +10,7 @@ interface Material {
   unit: string;
   cost_per_unit: number;
   current_stock: number;
+  min_stock_level: number;
 }
 
 interface EditMaterialModalProps {
@@ -26,6 +27,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({ isOpen, onClose, 
     supplier: '',
     unit: '',
     cost_per_unit: '',
+    min_stock_level: '',
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -37,6 +39,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({ isOpen, onClose, 
         supplier: material.supplier,
         unit: material.unit,
         cost_per_unit: String(material.cost_per_unit),
+        min_stock_level: String(material.min_stock_level),
       });
     }
   }, [material]);
@@ -56,6 +59,7 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({ isOpen, onClose, 
       await axios.put(`/api/materials/${material.id}`, {
         ...formData,
         cost_per_unit: parseFloat(formData.cost_per_unit) || 0,
+        min_stock_level: parseFloat(formData.min_stock_level) || 0,
       });
       onSuccess();
       onClose();
@@ -89,7 +93,11 @@ const EditMaterialModal: React.FC<EditMaterialModalProps> = ({ isOpen, onClose, 
             </div>
             <div className="col">
               <label htmlFor="cost_per_unit" className="form-label">Cost per Unit</label>
-              <input type="number" className="form-control" id="cost_per_unit" name="cost_per_unit" value={formData.cost_per_unit} onChange={handleChange} />
+              <input type="number" step="0.01" className="form-control" id="cost_per_unit" name="cost_per_unit" value={formData.cost_per_unit} onChange={handleChange} />
+            </div>
+            <div className="col">
+              <label htmlFor="min_stock_level" className="form-label">Min Stock Level</label>
+              <input type="number" step="0.01" className="form-control" id="min_stock_level" name="min_stock_level" value={formData.min_stock_level} onChange={handleChange} />
             </div>
           </div>
           {error && <p className="error-message">{error}</p>}

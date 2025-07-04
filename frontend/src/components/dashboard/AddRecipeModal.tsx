@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import axios from 'axios';
-// Temporarily defining types here to bypass build cache issues
-interface Material {
-  id: number;
-  name: string;
-  unit: string;
-  cost_per_unit: number;
-}
+import { Material } from '../../types';
 
 interface IngredientFormState {
   material_id: string;
@@ -135,23 +129,21 @@ const AddRecipeModal: React.FC<AddRecipeModalProps> = ({ show, onHide, onRecipeA
           <h5>Ingredients</h5>
           {ingredients.map((ingredient, index) => (
             <Row key={index} className="mb-3 align-items-center">
-              <Col md={6}>
-                <Form.Group controlId={`form-material-${index}`}>
-                  <Form.Label>Material</Form.Label>
-                  <Form.Select
-                    aria-label={`Material for ingredient ${index + 1}`}
-                    value={ingredient.material_id}
-                    name="material_id"
-                    onChange={(e) => handleIngredientChange(index, e)}
-                    required
-                  >
-                    <option value="">Select Material</option>
-                    {availableMaterials.map((material) => (
-                      <option key={material.id} value={material.id}>{material.name}</option>
-                    ))}
-                  </Form.Select>
-                </Form.Group>
-              </Col>
+              <Form.Group as={Col} md={6}>
+                <Form.Label htmlFor={`form-ingredient-material-${index}`}>Material</Form.Label>
+                <Form.Select
+                  id={`form-ingredient-material-${index}`}
+                  value={ingredient.material_id}
+                  name="material_id"
+                  onChange={(e) => handleIngredientChange(index, e)}
+                  required
+                >
+                  <option value="">Select Material</option>
+                  {availableMaterials.map((material) => (
+                    <option key={material.id} value={material.id}>{material.name}</option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
               <Col md={4}>
                 <Form.Group controlId={`form-percentage-${index}`}>
                   <Form.Label>Percentage (%)</Form.Label>

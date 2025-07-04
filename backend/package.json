@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "PORT=5001 node index.js",
-    "dev": "nodemon index.js",
+    "dev": "PORT=5002 nodemon index.js",
     "lint": "eslint .",
     "test": "jest"
   },

@@ -1,5 +1,5 @@
 -- Enum Types
-CREATE TYPE user_role AS ENUM ('admin', 'production_manager');
+CREATE TYPE user_role AS ENUM ('admin', 'production_manager', 'staff');
 CREATE TYPE production_status AS ENUM ('Pending', 'In Progress', 'Completed', 'Cancelled');
 
 -- Users Table
@@ -8,7 +8,7 @@ CREATE TABLE users (
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role user_role NOT NULL,
+    role user_role NOT NULL DEFAULT 'staff',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -17,7 +17,9 @@ CREATE TABLE materials (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
+    supplier VARCHAR(255),
     unit VARCHAR(50), -- e.g., kg, L, units
+    cost_per_unit NUMERIC(10, 2) DEFAULT 0,
     min_stock_level NUMERIC(10, 2) DEFAULT 0,
     current_stock NUMERIC(10, 2) DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -29,6 +31,9 @@ CREATE TABLE material_batches (
     material_id INTEGER NOT NULL REFERENCES materials(id),
     batch_number VARCHAR(100) UNIQUE NOT NULL,
     quantity NUMERIC(10, 2) NOT NULL,
+    price_per_unit NUMERIC(10, 2),
+    sst_percentage NUMERIC(5, 2),
+    total_price NUMERIC(10, 2),
     expiry_date DATE,
     received_date DATE DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -45,14 +50,14 @@ CREATE TABLE recipes (
     UNIQUE(name, version)
 );
 
--- Recipe Ingredients Table (Join table for Recipes and Materials)
-CREATE TABLE recipe_ingredients (
+-- Recipe Materials Table (Join table for Recipes and Materials)
+CREATE TABLE recipe_materials (
     id SERIAL PRIMARY KEY,
     recipe_id INTEGER NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
     material_id INTEGER NOT NULL REFERENCES materials(id),
-    quantity NUMERIC(10, 2) NOT NULL,
-    unit VARCHAR(50),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    percentage NUMERIC(5, 2) NOT NULL, -- Percentage of this material in the recipe
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT recipe_materials_recipe_id_material_id_key UNIQUE (recipe_id, material_id)
 );
 
 -- Production Batches Table
@@ -86,6 +91,25 @@ CREATE TABLE quality_checks (
     comments TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Inventory History Table
+CREATE TABLE inventory_history (
+    id SERIAL PRIMARY KEY,
+    material_id INTEGER NOT NULL REFERENCES materials(id),
+    batch_id INTEGER REFERENCES material_batches(id),
+    user_id INTEGER REFERENCES users(id),
+    change_type VARCHAR(50) NOT NULL, -- e.g., 'initial_stock', 'manual_adjustment', 'production_use', 'batch_addition'
+    quantity_change NUMERIC(10, 2) NOT NULL,
+    new_stock_level NUMERIC(10, 2) NOT NULL,
+    reason TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Add sample materials
+INSERT INTO materials (name, description, supplier, unit, cost_per_unit, min_stock_level) VALUES 
+('All-Purpose Flour', 'Standard white flour for baking.', 'King Arthur Flour', 'kg', 2.50, 10.00),
+('Granulated Sugar', 'Refined white sugar.', 'Domino Sugar', 'kg', 1.50, 20.00),
+('Unsalted Butter', 'Creamy unsalted butter.', 'Land O''Lakes', 'kg', 8.00, 5.00);
 
 -- Optional: Add a default admin user for initial setup
 -- For production, use a more secure method to create the first admin user

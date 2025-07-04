@@ -32,8 +32,21 @@ export interface RecipeListItem {
 }
 
 export interface Material {
-    id: number;
-    name: string;
-    unit: string;
-    cost_per_unit?: string;
+  id: number;
+  name: string;
+  description: string;
+  supplier: string;
+  unit: string;
+  cost_per_unit: number;
+  current_stock: number;
+  min_stock_level: number;
+}
+
+export interface MaterialBatch {
+  id: number;
+  material_id: number;
+  batch_number: string;
+  quantity: number;
+  expiry_date: string;
+  total_price: number;
 }

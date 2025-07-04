@@ -37,6 +37,8 @@ try {
   app.use('/api/auth', require('./routes/auth'));
   app.use('/api/recipes', require('./routes/recipes'));
   app.use('/api/materials', require('./routes/materials'));
+  app.use('/api/inventory', require('./routes/inventory'));
+app.use('/api/alerts', require('./routes/alerts'));
   app.use('/api/production', require('./routes/production'));
   console.log('[SUCCESS] Routes loaded successfully.');
 } catch (err) {

@@ -30,12 +30,16 @@ CREATE TABLE materials (
 -- Material Batches (Specific batches of raw materials)
 CREATE TABLE material_batches (
     id SERIAL PRIMARY KEY,
-    material_id INTEGER NOT NULL REFERENCES materials(id),
-    batch_number VARCHAR(100) UNIQUE NOT NULL,
+    material_id INTEGER NOT NULL REFERENCES materials(id) ON DELETE CASCADE,
+    batch_number VARCHAR(255) NOT NULL,
     quantity NUMERIC(10, 2) NOT NULL,
+    price NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
+    sst NUMERIC(5, 2) NOT NULL DEFAULT 0.00, -- Assuming SST is a percentage
+    total_price NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
     expiry_date DATE,
-    received_date DATE DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    received_date DATE DEFAULT CURRENT_DATE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(material_id, batch_number)
 );
 
 -- Recipes Table
@@ -89,12 +93,31 @@ CREATE TABLE quality_checks (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Enum for Inventory Change Types
+CREATE TYPE inventory_change_type AS ENUM ('batch_add', 'manual_adjustment', 'production_use', 'initial_stock');
+
+-- Inventory History Table
+CREATE TABLE inventory_history (
+    id SERIAL PRIMARY KEY,
+    material_id INTEGER NOT NULL REFERENCES materials(id) ON DELETE CASCADE,
+    batch_id INTEGER REFERENCES material_batches(id) ON DELETE SET NULL,
+    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    change_type inventory_change_type NOT NULL,
+    quantity_change NUMERIC(10, 2) NOT NULL,
+    new_stock_level NUMERIC(10, 2) NOT NULL,
+    reason TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Optional: Add a default admin user for initial setup
 -- For production, use a more secure method to create the first admin user
 -- Default admin user with a real password hash (password: "password")
 INSERT INTO users (username, email, password_hash, role) VALUES ('admin', 'admin@example.com', '$2b$10$cwT/u27xY4wD3gB.0c.a.u/2L.p2.5s.3s.4s.5s.6s.7s.8s.9s.0s', 'admin');
 
--- Grant all privileges to the soluxe user on all tables and sequences created.
+-- Grant all privileges to the soluxe user on all tables, sequences, and types created.
 -- This is necessary because the init script runs as the 'postgres' user.
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO soluxe;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO soluxe;
+GRANT USAGE ON TYPE user_role TO soluxe;
+GRANT USAGE ON TYPE production_status TO soluxe;
+GRANT USAGE ON TYPE inventory_change_type TO soluxe;
